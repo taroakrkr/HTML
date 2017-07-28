@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+function validateForm(id){
+// 	var nodes = document.querySelectorAll('[data-validation]:not([data-validation=""])');
+	var form = document.getElementById(id);
+	var nodes = form.querySelectorAll('[data-validation]:not([data-validation=""])');
+	var result = {elements:[],fieldNms:[]};
+	for(var i=0; i<nodes.length; i++){
+		var eachElement = nodes[i];
+		switch(eachElement.nodeName){
+		case "INPUT" : 
+			switch(eachElement.type){
+			case "text" : 
+				checkElement(eachElement, result, function(ele){
+					if ( ele.value == "" ) return false;
+					return true;
+				});
+				break;
+			case "radio" :
+			case "checkbox" :	
+				checkElement(eachElement, result, function(ele){
+					var radioNodes = document.getElementsByName(ele.name);
+					for(var i=0; i<radioNodes.length; i++){
+						if ( radioNodes[i].checked ){
+							return true;
+						}
+					}
+					return false;
+				});				
+			}
+			break;
+		case "SELECT" :
+			checkElement(eachElement, result, function(ele){
+				if ( ele.options[ele.selectedIndex].value == "" ) return false;
+				return true;
+			});
+			break;			
+		}		
+	}
+	if ( result.elements.length > 0 ){
+		alert(result.fieldNms.join(","));
+		result.elements[0].focus();
+	}
+
+	function checkElement(element, resultArr, checkFunc){
+		if ( !checkFunc(element) ){
+ 			resultArr.elements.push(element);
+ 			resultArr.fieldNms.push(element.dataset.validation);
+		}
+	}
+}
+</script>
+</head>
+<body>
+<form id="inputForm">
+	이름<input type="text" name="name" value="" data-validation="이름"><br>
+	<input type="checkbox" name="applyYn" value="music" data-validation="메일링">메일링체크
+	<input type="checkbox" name="favorite" value="music" data-validation="취미">음악
+	<input type="checkbox" name="favorite" value="sports">스포트<br>
+	성별:<input type="radio" name="gender" value="male" data-validation="성별">남
+	<input type="radio" name="gender" value="female">여<br>
+	<select data-validation="셀렉트박스">
+		<option value="">선택</option>	
+		<option value=1>1</option>
+	</select><br>	
+	<input type="button" value="점검" onclick='validateForm("inputForm");'><br>	
+</form>
+</body>
+</html>
