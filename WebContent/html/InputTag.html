@@ -7,12 +7,12 @@
 	function doSubmit() {
 		// 		event.preventDefault();
 	}
-	function validateForm(signIn) {
+	function validateForm(signIn) {//수정방향 -> 비교 부분을 Anonymous방식으로 구현
 		var radioCount=0;
 		var checkBoxCount=0;
 		var validCheckBoxCount=0;
 		for (var i = 0; i < signIn.length; i++) {
-			if (signIn[i].dataset.validation == "Y") {
+			if (signIn[i].dataset.validation == "Y") {//수정방향 -> 많은 if문 > switch case문 
 				if (signIn[i].type == "text") {
 					if (signIn[i].value == "") {
 						alert(i + 1 + "번칸 빈칸");
@@ -22,6 +22,7 @@
 				}
 				if (signIn[i].type == "radio") {
 					var radio = document.getElementsByName(signIn[i].name);
+					console.dir(radio);//수정방향 -> 그룹의 하나만 가져와서 그룹 노드들을 비교
 					if (signIn[i].checked == true){
 						radioCount++;
 					}
