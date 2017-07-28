@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+form {
+	border: 2px solid #9fff80;
+}
+span {
+	font-size: 0.9em;
+}
+</style>
+<script>
+var regexp = /[a-z]/g;
+console.log(regexp.test('a'));
+console.log(regexp.test('A'));
+</script>
+</head>
+<body>
+	<h3>회원가입</h3>
+	<form>
+		<span>이름 : </span><input type="text" value="이름" /><br> <span>생년월일
+			: </span> <select name="" id="">
+			<option value="1995">1995</option>
+			<option value="1996">1996</option>
+			<option value="1997">1997</option>
+			<option value="1998">1998</option>
+		</select> <select name="" id="">
+			<option value="1">1월</option>
+			<option value="2">2월</option>
+			<option value="3">3월</option>
+		</select><br> <span>성별 : </span> <input type="radio" name="gender"
+			value="man" />남 <input type="radio" name="gender" value="woman" />여
+		<br>
+		<textarea name="" id="" cols="30" rows="10"></textarea>
+		<input type="submit" value="제출" />
+	</form>
+</body>
+</html>

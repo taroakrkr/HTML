@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	function doSubmit() {
+		// 		event.preventDefault();
+	}
+	function validateForm(signIn) {
+		var radioCount=0;
+		var checkBoxCount=0;
+		var validCheckBoxCount=0;
+		for (var i = 0; i < signIn.length; i++) {
+			if (signIn[i].dataset.validation == "Y") {
+				if (signIn[i].type == "text") {
+					if (signIn[i].value == "") {
+						alert(i + 1 + "번칸 빈칸");
+						signIn[i].focus();
+						return false;
+					}
+				}
+				if (signIn[i].type == "radio") {
+					var radio = document.getElementsByName(signIn[i].name);
+					if (signIn[i].checked == true){
+						radioCount++;
+					}
+				}
+				if (signIn[i].type == "checkbox") {
+					validCheckBoxCount++;
+					var checkBox = document.getElementsByName(signIn[i].name);
+					if (signIn[i].checked == true){
+						checkBoxCount++;
+					}
+				}
+			}
+		}
+		if(radioCount<=0){
+			alert("내/외국인 구분을 선택하세요");
+			radio[0].focus();
+			return;
+		}
+		if(checkBoxCount<=validCheckBoxCount-1){
+			alert("필수항목체크");
+			checkBox[0].focus();
+			return;
+		}
+	}
+</script>
+</head>
+<body>
+	<form action="/action_page.php" id="signIn">
+		First name: <input type="text" name="fname" placeholder="예)길동"
+			data-validation="Y"><br> Last name: <input type="text"
+			name="lname" placeholder="예)홍" data-validation="Y"><br>
+			내국인<input type="radio" name="countryTp" value="native" data-validation="Y" /> 
+			외국인<input type="radio" name="countryTp" value="foreigner" data-validation="Y" /> 
+			외계인<input type="radio" name="countryTp" value="space" data-validation="Y" /> <br> 
+			동의1(필수)<input type="checkbox" name="check123" data-validation="Y"/>
+			동의2(필수)<input type="checkbox" name="check123" data-validation="Y"/>
+			동의3(선택)<input type="checkbox" name="check123"/>
+			<br><input type="submit" onclick="doSubmit();" value="Submit"> 
+			<input type="button" value="유효성체크" onClick="validateForm(signIn);" />
+	</form>
+</body>
+</html>

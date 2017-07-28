@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	//기명식
+// 	function onLoad() {
+// 		var obj = document.getElementById("contents");//contents 포인터
+// 		obj.value = "Hello World";
+// 	}
+// 	window.onload = onLoad;//윈도우가로드되고 실행
+	//무기명식
+// 	window.onload = function(){
+// 		var obj = document.getElementById("contents");//contents 포인터
+// 		obj.value = "Hello World";
+// 	}
+	
+	
+	
+	function operatorAdd(op1,op2){
+		return op1+op2;
+	}
+	function test(op1,op2,operatorFunc){
+		return operatorFunc(op1,op2);
+	}
+	window.onload=function(){
+		console.log(test(1,2,operatorAdd));
+	}
+</script>
+</head>
+<body>
+	<input id="contents" type="text" value="1234">
+</body>
+</html>

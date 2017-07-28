@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+(function(){
+	var a=1;
+	var b=2;
+	console.log(a+b);
+	resultaa = a+b;//글로벌변수생성
+	result = a+b;//시작전에 모든 변수,함수를 서치해서 언디파인드로 생성 그래서 var result가 뒤에 있어도 된다
+	console.log(resultaa);
+	var result;
+})();
+window.onload = function(){
+	console.log(resultaa);
+}
+</script>
+</head>
+<body>
+
+</body>
+</html>

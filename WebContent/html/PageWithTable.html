@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+.floating {
+  position: fixed; 
+  right: 50%; 
+  top: 180px; 
+  margin-right: -420px;
+  text-align:center;
+  width: 120px;
+}
+</style>
+<script>
+	function addRow() {
+		var fileTable = document.getElementById("fileTable");
+		var tBody = fileTable.tBodies[0];
+		var row = tBody.insertRow(tBody.rows.length);
+		// 		var cell = row.insertCell(0);
+		// 		cell.innerHTML = '<input type="checkbox">'
+		// 		row.insertCell(1).innerHTML = '&nbsp;';
+		// 		row.insertCell(2);
+		// 		row.insertCell(3);
+		// 		row.insertCell(4);
+		// 		row.insertCell(5);
+		// 		row.insertCell(6);
+		// 		row.insertCell(7);
+		// 		row.insertCell(8);
+		// 		row.insertCell(9);
+		row.innerHTML = '<td><input type="checkbox"/></td>\
+		<td></td>\
+		<td></td>\
+		<td></td>\
+		<td></td>\
+		<td></td>\
+		<td></td>'
+				+ '<td></td><td></td><td></td>'
+	}
+	function delRow() {
+		var fileTable = document.getElementById("fileTable");
+		var tBody = fileTable.tBodies[0];
+		for (var i = tBody.rows.length - 1; i >= 0; i--) {
+			var trObj = tBody.rows[i];
+			if (trObj.children[0].children[0].checked) {
+				tBody.deleteRow(i);
+			}
+			console.dir(tBody);
+		}
+	}
+</script>
+</head>
+<body>
+	<h1>사원급여테이블</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th style="width: 100px">사원이름</th>
+				<th style="width: 5em">급여</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>홍길동</td>
+				<td>350</td>
+			</tr>
+			<tr>
+				<td>임꺽정</td>
+				<td>550</td>
+			</tr>
+			<tr>
+				<td>변사또</td>
+				<td>100</td>
+			</tr>
+		</tbody>
+	</table>
+	<h1>지역별 판매량</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th style="width: 5em">&nbsp;</th>
+				<th style="width: 5em">&nbsp;</th>
+				<th colspan="4">분기별 판매량</th>
+			</tr>
+			<tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>1분기</th>
+				<th>2분기</th>
+				<th>3분기</th>
+				<th>4분기</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td rowspan="2">경기도</td>
+				<td>수원</td>
+				<td>10</td>
+				<td>1</td>
+				<td>3</td>
+				<td>4</td>
+			</tr>
+			<tr>
+				<td>성남</td>
+				<td>12</td>
+				<td>5</td>
+				<td>31</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td rowspan="2">경기도</td>
+				<td>수원</td>
+				<td>6</td>
+				<td>12</td>
+				<td>43</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>성남</td>
+				<td>2</td>
+				<td>23</td>
+				<td>5</td>
+				<td>12</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h1 style="text-decoration: underline">자료보관문서 색인표</h1>
+	<input type="button" onClick="addRow();" value="행추가" />
+	<input type="button" onClick="delRow();" value="행삭제" />
+	<table id="fileTable" style="width: 100%;" border="1">
+		<thead>
+			<tr>
+				<th rowspan="2">선택</th>
+				<th rowspan="2">NO</th>
+				<th rowspan="2">보존기간</th>
+				<th colspan="3">보관철</th>
+				<th rowspan="2">보관부서</th>
+				<th rowspan="2">승인여부</th>
+				<th rowspan="2">승인</th>
+				<th rowspan="2">폐기일</th>
+			</tr>
+			<tr>
+				<th>분류기호</th>
+				<th>자료명</th>
+				<th>전장수</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><input type="checkbox" name="" id="" /></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="floating">
+		<img src="../img/bonobono.gif" width=300px height=300px />
+	</div>
+</body>
+</html>

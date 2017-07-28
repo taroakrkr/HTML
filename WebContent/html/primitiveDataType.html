@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Primitive Data Type</title>
+<script>
+	(function(param) {//즉시실행함수표현법 IIFE(immediately invoked function express)
+		var primitiveVar1 = "John";
+		var primitiveVar2 = 3.14;
+		var obj= {name: "홍길동"};
+		var refObj= obj;
+		refObj.age = 15;
+		console.dir(obj);
+		console.dir(refObj);
+		var dt = new Date();
+		console.dir(dt);
+		console.log(dt.getDay());
+		console.log('\u03A0');
+		console.log('abcd'.toUpperCase());
+		console.log('ABCD'.toLowerCase());
+		
+// 		console.log(typeof "string");
+// 		console.log(typeof 12);
+// 		console.log(typeof true);
+// 		console.log(typeof null);
+// 		console.log(typeof asdf);
+	})(1234);
+</script>
+</head>
+<body>
+	<ul>
+		<li>string</li>
+		<li>number</li>
+		<li>boolean</li>
+		<li>null</li>
+		<li>undefined</li>
+	</ul>
+</body>
+</html>
