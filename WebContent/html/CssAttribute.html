@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+p {
+	font-size: 1em;
+}
+
+p.small {
+	font-size: 2em;
+}
+
+p.middle {
+	font-size: 3em;
+}
+
+p.large {
+	font-size: 4em;
+}
+
+section article {
+	border: 1px solid #0000ff;
+	margin: 2% 2%;
+	border-radius: 25px;
+}
+
+section#firstSection article {
+	text-align: center;
+	background-color: rgb(200, 130, 35);
+}
+
+section#secondSection article {
+	text-align: justify;
+	background-color: hotpink;
+}
+
+section table.userTable {
+	width: 100%;
+}
+
+section table.userTable, section table.userTable th, section table.userTable td
+	{
+	border: 2px solid black;
+}
+
+section table.userTable>thead>tr>th {
+	width: 25%;
+}
+
+section table.userTable>tbody>tr>td.number {
+	text-align: right;
+	color: blue;
+}
+
+section table.userTable>tbody>tr>td.charType {
+	text-align: center;
+	color: rgb(200, 130, 35);
+}
+
+body {
+	background-image: url('../img/bonobono.gif');
+}
+
+div {
+	background-color: red;
+	width: 50px;
+	height: 50px;
+}
+div.hasBox{
+	border : 20px solid black;
+	padding: 10px;
+	margin: 5px;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h1>Css Attribute</h1>
+	</header>
+	<section>
+		<div class = "hasBox"></div>
+	</section>
+	<section id="firstSection">
+		<article>
+			<p>p tag css attribute1</p>
+			<p>p tag css attribute2tag css attribute2tag css attribute2tag
+				css attribute2tag css attribute2tag css attribute2tag css attribute2</p>
+		</article>
+		<article>
+			<p class="small">p.small</p>
+			<p class="middle">p.middle</p>
+			<p class="large">p.large</p>
+		</article>
+	</section>
+	<section id="secondSection">
+		<article>
+			<p>p tag css attribute1</p>
+			<p>p tag css attribute2 tag css attribute2tag css attribute2tag
+				css attribute2tag css attribute2tag css attribute2tag css attribute2</p>
+		</article>
+		<article>
+			<p class="small">p.small</p>
+			<p class="middle">p.middle</p>
+			<p class="large">p.large</p>
+		</article>
+	</section>
+	<section>
+		<h2>급여 테이블</h2>
+		<table class="userTable">
+			<thead>
+				<tr>
+					<th>사원명</th>
+					<th>사원No</th>
+					<th>직급</th>
+					<th>기본급</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="charType">홍길동</td>
+					<td class="charType">201509001</td>
+					<td class="charType">대리</td>
+					<td class="number">1,500,000</td>
+				</tr>
+				<tr>
+					<td class="charType">임꺽정</td>
+					<td class="charType">201509002</td>
+					<td class="charType">대리</td>
+					<td class="number">1,300,000</td>
+				</tr>
+				<tr>
+					<td class="charType">변사또</td>
+					<td class="charType">201509003</td>
+					<td class="charType">사원</td>
+					<td class="number">1,200,000</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+</body>
+</html>

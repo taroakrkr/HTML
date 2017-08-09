@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+#contents {
+	width: 67%;
+	float: left;
+	margin-bottom: 2%;
+	margin-right: 1%;
+	border: 2px solid rgb(230, 140, 50);
+	padding-left: 1%;
+}
+
+#left-sidebar {
+	width: 14%;
+	float: left;
+	margin-bottom: 2%;
+	margin-right: 1%;
+	border: 2px solid rgb(230, 140, 50);
+}
+
+#right-sidebar {
+	width: 14%;
+	float: right;
+	margin-bottom: 1%;
+	border: 2px solid rgb(230, 140, 50);
+}
+
+#footer {
+	clear: both;
+	border: 2px solid rgb(230, 140, 50);
+}
+
+@media screen and (max-width:680px) {
+	body {
+		background-image: url('../img/bonobono.gif');
+	}
+}
+</style>
+<script>
+	function b1_click() {
+		document.body.style.backgroundColor = 'black';
+		document.body.style.color = 'white';
+	}
+	function b2_click() {
+		document.body.style.backgroundColor = 'white';
+		document.body.style.color = 'black';
+	}
+</script>
+</head>
+<body>
+	<header>
+		<h1 style="border: 2px solid rgb(230, 140, 50)">사이트 제목</h1>
+	</header>
+	<div id="left-sidebar">
+		<h2>사이드바</h2>
+		<ul>
+			<li>항목1</li>
+			<li>항목2</li>
+			<li>항목3</li>
+			<li>항목4</li>
+		</ul>
+	</div>
+	<div id="contents">
+		<h2>본문</h2>
+		<p>HTML은 하이퍼텍스트 마크업 언어(HyperText Markup Language, 문화어: 초본문표식달기언어,
+			하이퍼본문표식달기언어)라는 의미의 웹 페이지를 위한 지배적인 마크업 언어다. HTML은 제목, 단락, 목록 등과 같은 본문을
+			위한 구조적 의미를 나타내는 것뿐만 아니라 링크, 인용과 그 밖의 항목으로 구조적 문서를 만들 수 있는 방법을 제공한다.
+			그리고 이미지와 객체를 내장하고 대화형 양식을 생성하는 데 사용될 수 있다. HTML은 웹 페이지 콘텐츠 안의 꺾쇠 괄호에
+			둘러싸인 "태그"로 되어있는 HTML 요소 형태로 작성한다. HTML은 웹 브라우저와 같은 HTML 처리 장치의 행동에
+			영향을 주는 자바스크립트와 본문과 그 밖의 항목의 외관과 배치를 정의하는 CSS 같은 스크립트를 포함하거나 불러올 수 있다.
+			HTML과 CSS 표준의 공동 책임자인 W3C는 명확하고 표상적인 마크업을 위하여 CSS의 사용을 권장한다.</p>
+	</div>
+	<div id="right-sidebar">
+		<h2>사이드바</h2>
+		<ul>
+			<li>항목1</li>
+			<li>항목2</li>
+			<li>항목3</li>
+			<li>항목4</li>
+		</ul>
+		<div style="text-align: center">
+			<input
+				style="background-color: black ; border: 1px solid white; color: white"
+				type="button" value="검정" onclick="b1_click();" /> <input
+				style="background-color: white; border: 1px solid black; color: black"
+				type="button" value="흰색" onclick="b2_click();" />
+		</div>
+	</div>
+	<div id="footer">
+		<h2>푸터</h2>
+		<p>저작권정보</p>
+		<p>연락처 등</p>
+	</div>
+</body>
+</html>

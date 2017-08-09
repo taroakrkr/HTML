@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	(function() {
+		var obj = {
+			name : "홍길동",
+			age : 15
+		};
+		for ( var sdel in obj) {
+			console.log(sdel, obj[sdel]);
+
+		}
+		console.dir(obj);
+		if ("age" in obj) {
+			console.log("Age");
+		}
+		if ("constructor" in obj) {//프로토타입 포함
+			console.log("constructor");
+		}
+		if (obj.hasOwnProperty("constructor") in obj) {//프로토 타입 미포함
+			console.log("hasOwn");
+		}
+		var a = [ 1, 4, 3, 2 ];
+		console.log(a instanceof Array);
+		console.log(a instanceof Object);
+		console.dir(a);
+		
+		var currentDt = new Date();
+		console.dir(currentDt);
+		console.log(currentDt.getFullYear());
+	})();
+</script>
+</head>
+<body>
+	<a href="javascript:void(0);"> 클릭해도 아무일도 일어나지 않아요 </a>
+	<a href="javascript:void(document.body.style.backgroundColor='green');">
+		클릭하면 배경색이 녹색으로 </a>
+</body>
+</html>

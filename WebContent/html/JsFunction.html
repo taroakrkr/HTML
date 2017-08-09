@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	(function() {
+
+		console.log(add(1, 2));
+		function add(x, y) {
+			return x + y;
+		}//선언식함수 - 위에서도 호출가능
+
+		var plus = function(x, y) {
+			return x + y;
+		}; //표현식 함수 - 이 줄에 와야 실행됨
+		console.log(plus(3, 4));
+		console.log('-------------------------------------');
+		//--------------------------------------------
+		function Car(wheelCnt, manufacturer, speed) {//생성자로 사용할거라 대문자
+			var maxSpeed = 200;//프로퍼티가 아님. 외부에서 참조 불가
+			var counter=0;
+			this.wheelCnt = wheelCnt;
+			this.manufacturer = manufacturer;
+			this.speed = speed;
+			this.speedUp = function() {
+				counter++;//내부함수에서 참조. 지역변수를 클로저로 사용하겠다 - 지역변수가 함수종료와 함께 사라지지 않음(레퍼런스가 살아있을때)
+				var innerCounter=0;
+				innerCounter++;//추가 내부함수에서 참조하지 않으면 사라짐
+				if (this.speed < maxSpeed) {
+					this.speed++;
+				}
+			}
+			this.getCounter = function() {
+				return counter;
+			}
+			//생성자 함수는 리턴문이 없어도 기본적으로 this를 리턴
+		}
+		Car.prototype.speedDown = function(){//프로토타입에 넣음, 위의 지역변수(maxSpeed,counter)는 못쓴다
+			this.speed--;
+		}//프로토 타입에 선언하면 인스턴스마다 만들필요가 없어지기 때문에 조금 더 좋다
+
+		var lamborghini = new Car(4, 'Lamborghini', 0);//빈객체를 생성하고 this를 리턴받는다
+		var ford = new Car(4, 'Ford', 0);
+		console.dir(lamborghini);
+		console.log(ford);
+		console.dir(Car);//생성자함수를 통해 객체를 만들어내면 내부 프로퍼티의 프로토타입링크가 생성자함수의 프로토타입프로퍼티를 참조한다
+		console.log('-------------------------------------');
+		lamborghini.speedUp();
+		lamborghini.speedUp();
+		lamborghini.speedUp();
+		lamborghini.speedUp();
+		lamborghini.getCounter();
+		console.log(lamborghini.getCounter());
+		console.log('-------------------------------------');
+		lamborghini.speedDown();
+		console.log(lamborghini.speed);
+	})();
+</script>
+</head>
+<body>
+
+</body>
+</html>
