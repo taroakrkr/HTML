@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	var value = 100;
+	(function() {
+
+		var myObject = {
+			value : 1,
+			func1 : function() {
+				this.value += 1;//this=myObject
+				console.log('func1() called. this.value : ' + this.value);
+				console.dir(this);
+
+				func2 = function() {
+					this.value += 1;//this=없음 ->글로벌
+					console.log('func2() called. this.value : ' + this.value);
+
+					func3 = function() {
+						this.value += 1;//this=없음 ->글로벌, 글로벌의 변수는 프로퍼티처럼 인식
+						console.log('func3() called. this.value : '	+ this.value);
+						console.dir(this);
+					}
+					func3();
+				}
+				func2();
+			}
+		};
+		myObject.func1();
+	})();
+</script>
+</head>
+<body>
+
+</body>
+</html>
