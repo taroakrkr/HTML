@@ -59,8 +59,8 @@ div {
 				})(sBoxIdArr.length, i));
 			}
 		}
-		//-----------------셀렉트 박스 옵션 데이터 가져오기-----------------
-		function change(selId) {//onChange 대상자에 연결된 뒤쪽 박스 체인지
+		//-----------------셀렉트 박스 체인지 이벤트 발생시-----------------
+		function change(selId) {//onChange 대상자에 연결된 뒤쪽 박스 모두 체인지
 			for (var i = sBoxIdArr.indexOf(selId) + 1; i < sBoxIdArr.length; i++) {
 				var preSelBox = document.getElementById(sBoxIdArr[i - 1]);
 				setBoxOption(sBoxIdArr[i], preSelBox.value);
