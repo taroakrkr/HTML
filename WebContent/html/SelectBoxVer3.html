@@ -49,13 +49,13 @@
 			}
 		}
 		//-----------------이벤트리스너 연결하기-----------------
-		var addEvent = function(formlength, index) {//onChange 대상자에 뒤쪽 박스 연결
+		function addEvent(formlength, index) {//onChange 대상자에 뒤쪽 박스 연결
 			for (var i = index; i < formlength; i++) {
 				change(sBoxIdArr[i]);
 			}
 		}
 		//-----------------셀렉트 박스 옵션 데이터 가져오기-----------------
-		var change = function(selId) {//onChange 대상자에 연결된 뒤쪽 박스 체인지
+		function change(selId) {//onChange 대상자에 연결된 뒤쪽 박스 체인지
 			for (var i = sBoxIdArr.indexOf(selId) + 1; i < sBoxIdArr.length; i++) {
 				var preSelBox = document.getElementById(sBoxIdArr[i - 1]);
 				setBoxOption(sBoxIdArr[i], preSelBox.value);
