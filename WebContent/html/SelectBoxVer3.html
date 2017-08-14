@@ -3,36 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <title>SelectBox</title>
+<style>
+div {
+	border: 2px solid black;
+	background-color: lightgreen;
+	text-align: center;
+	padding: 20px;
+}
+</style>
 <script>
 	var SelectBoxChain = function(sBoxIdArr, formId) {
 		var jsonObj = {
-			"data" : [ 
-				{"pId" : "init","id" : "init","text" : ""}, 
-				{"pId" : "0000","id" : "1000","text" : "1번"}, 
-				{"pId" : "0000","id" : "2000","text" : "2번"}, 
-				{"pId" : "0000","id" : "3000","text" : "3번"},
-				//-----------------------------------
-				{"pId" : "1000","id" : "1100","text" : "1-1번"}, 
-				{"pId" : "1000","id" : "1200","text" : "1-2번"},
-				{"pId" : "1000","id" : "1300","text" : "1-3번"},
-				//-----------------------------------
-				{"pId" : "2000","id" : "2100","text" : "2-1번"}, 
-				{"pId" : "2000","id" : "2200","text" : "2-2번"},
-				//-----------------------------------
-				{"pId" : "3000","id" : "3100","text" : "3-1번"}, 
-				{"pId" : "3000","id" : "3200","text" : "3-2번"},
-				//-----------------------------------
-				{"pId" : "1100","id" : "1110","text" : "1-1-1번"}, 
-				{"pId" : "1100","id" : "1120","text" : "1-1-2번"},
-				//-----------------------------------
-				{"pId" : "1110","id" : "1111","text" : "1-1-1-1번"}, 
-				{"pId" : "1110","id" : "1112","text" : "1-1-1-2번"},
-				{"pId" : "1120","id" : "1121","text" : "1-1-2-1번"},
-				//-----------------------------------
-				{"pId" : "2100","id" : "2110","text" : "2-1-1번"}, 
-				{"pId" : "2100","id" : "2120","text" : "2-1-2번"} 
-				]
-		};
+				"data" : [ 
+							{"pId" : "init","id" : "init","text" : ""}, 
+							{"pId" : "0000","id" : "1000","text" : "1번"}, 
+							{"pId" : "0000","id" : "2000","text" : "2번"}, 
+							{"pId" : "0000","id" : "3000","text" : "3번"},
+							//-----------------------------------
+							{"pId" : "1000","id" : "1100","text" : "1-1번"}, 
+							{"pId" : "1000","id" : "1200","text" : "1-2번"},
+							{"pId" : "1000","id" : "1300","text" : "1-3번"},
+							//-----------------------------------
+							{"pId" : "2000","id" : "2100","text" : "2-1번"}, 
+							{"pId" : "2000","id" : "2200","text" : "2-2번"},
+							//-----------------------------------
+							{"pId" : "3000","id" : "3100","text" : "3-1번"}, 
+							{"pId" : "3000","id" : "3200","text" : "3-2번"},
+							//-----------------------------------
+							{"pId" : "1100","id" : "1110","text" : "1-1-1번"}, 
+							{"pId" : "1100","id" : "1120","text" : "1-1-2번"},
+							//-----------------------------------
+							{"pId" : "1110","id" : "1111","text" : "1-1-1-1번"}, 
+							{"pId" : "1110","id" : "1112","text" : "1-1-1-2번"},
+							{"pId" : "1120","id" : "1121","text" : "1-1-2-1번"},
+							//-----------------------------------
+							{"pId" : "2100","id" : "2110","text" : "2-1-1번"}, 
+							{"pId" : "2100","id" : "2120","text" : "2-1-2번"} 
+							]
+					};
 		this.init = function() {
 			//-----------------셀렉트 옵션 초기화-----------------
 			setBoxOption(sBoxIdArr[0], '0000');
@@ -42,16 +50,13 @@
 			//-----------------이벤트리스너 달아주기-----------------
 			var selectBoxes = document.getElementById(formId);//selectbox만 들어 있는 form
 			for (var i = 0; i < sBoxIdArr.length; i++) {
-				selectBoxes[i].boxNum=i;
-				selectBoxes[i].addEventListener("change", function() {
-					addEvent(sBoxIdArr.length, this.boxNum);//셀렉트 박스 이벤트 리스너 연결
-				});
-			}
-		}
-		//-----------------이벤트리스너 연결하기-----------------
-		function addEvent(formlength, index) {//onChange 대상자에 뒤쪽 박스 연결
-			for (var i = index; i < formlength; i++) {
-				change(sBoxIdArr[i]);
+				selectBoxes[i].addEventListener("change", (function(formLength, j) {
+					return function() {//onChange 대상자에 뒤쪽 박스 연결
+						for (var i = j; i < formLength; i++) {
+							change(sBoxIdArr[i]);
+						}
+					};
+				})(sBoxIdArr.length, i));
 			}
 		}
 		//-----------------셀렉트 박스 옵션 데이터 가져오기-----------------
@@ -61,7 +66,7 @@
 				setBoxOption(sBoxIdArr[i], preSelBox.value);
 			}
 
-		};
+		}
 		//-----------------셀렉트 박스 옵션 넣어주기-----------------
 		function setBoxOption(selId, selPidValue) {
 			var selBox = document.getElementById(selId);
@@ -86,11 +91,12 @@
 </script>
 </head>
 <body>
-	<form id=selectBoxes>
-		<select id="sel_1"></select> 
-		<select id="sel_2"></select> 
-		<select id="sel_3"></select> 
-		<select id="sel_4"></select>
-	</form>
+	<div>
+		<h1>SelectBox 연결 예제</h1>
+		<form id=selectBoxes>
+			<select id="sel_1"></select> <select id="sel_2"></select> <select
+				id="sel_3"></select> <select id="sel_4"></select>
+		</form>
+	</div>
 </body>
 </html>

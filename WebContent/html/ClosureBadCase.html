@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+//-------------------bad case---------------------------
+// 	window.onload = function() {
+// 		var btnIds = ["first","second","third"];
+// 		var names = ["hello","hi","good-bye"];
+// 		for(var i = 0; i<btnIds.length; i++){
+// 			var ele = document.getElementById(btnIds[i]);
+// 			ele.addEventListener("click", function(){
+// 				alert(names[i]);
+// 			});
+// 		}
+// 	}
+//-------------------good case--------------------------
+	window.onload = function() {
+		var btnIds = ["first","second","third"];
+		var names = ["hello","hi","good-bye"];
+		for(var i = 0; i<btnIds.length; i++){
+			var ele = document.getElementById(btnIds[i]);
+			ele.addEventListener("click", (function(j){
+				return function(){
+					alert(names[j]);
+				};
+			})(i));
+		}
+	}
+//------------------------------------------------------
+</script>
+</head>
+<body>
+	<input type="button" value="first" id="first" />
+	<input type="button" value="second" id="second" />
+	<input type="button" value="third" id="third" />
+</body>
+</html>
