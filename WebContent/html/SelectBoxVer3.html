@@ -12,8 +12,7 @@ div {
 }
 </style>
 <script>
-	var SelectBoxChain = function(formId) {
-		var sBoxIdArr=findSelectBoxFromForm(formId);
+	var SelectBoxChain = function(sBoxIdArr) {
 		var jsonObj = {
 				"data" : [ 
 							{"pId" : "init","id" : "init","text" : ""}, 
@@ -72,21 +71,11 @@ div {
 				}
 			}
 		}
-		//-----------------form의 셀렉트박스를 찾아 이름배열 만들기-----------------
-		function findSelectBoxFromForm(formId){
-			var tempArr=[];
-			var Boxes = document.getElementById(formId);
-			for (var i = 0; i < Boxes.length; i++) {
-				if (Boxes[i].type == "select-one") {
-					tempArr.push(Boxes[i].id);
-				}
-			}
-			return tempArr;
-		}
 		this.init();
 	}
 	window.onload = function() {
-		var boxForm = new SelectBoxChain('selectBoxes');
+		var sBoxIdArr = [ 'sel_1', 'sel_2', 'sel_3', 'sel_4' ];
+		var boxForm = new SelectBoxChain(sBoxIdArr);
 	}
 </script>
 </head>
