@@ -42,20 +42,20 @@
 			//-----------------이벤트리스너 달아주기-----------------
 			var selectBoxes = document.getElementById(formId);//selectbox만 들어 있는 form
 			for (var i = 0; i < sBoxIdArr.length; i++) {
-				selectBoxes[i].buttonNum=i;
+				selectBoxes[i].boxNum=i;
 				selectBoxes[i].addEventListener("change", function() {
-					addEvent(sBoxIdArr.length, this.buttonNum);//셀렉트 박스 이벤트 리스너 연결
+					addEvent(sBoxIdArr.length, this.boxNum);//셀렉트 박스 이벤트 리스너 연결
 				});
 			}
 		}
 		//-----------------이벤트리스너 연결하기-----------------
-		var addEvent = function(formlength, index) {
+		var addEvent = function(formlength, index) {//onChange 대상자에 뒤쪽 박스 연결
 			for (var i = index; i < formlength; i++) {
 				change(sBoxIdArr[i]);
 			}
 		}
 		//-----------------셀렉트 박스 옵션 데이터 가져오기-----------------
-		var change = function(selId) {
+		var change = function(selId) {//onChange 대상자에 연결된 뒤쪽 박스 체인지
 			for (var i = sBoxIdArr.indexOf(selId) + 1; i < sBoxIdArr.length; i++) {
 				var preSelBox = document.getElementById(sBoxIdArr[i - 1]);
 				setBoxOption(sBoxIdArr[i], preSelBox.value);
