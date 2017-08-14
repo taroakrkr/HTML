@@ -12,7 +12,8 @@ div {
 }
 </style>
 <script>
-	var SelectBoxChain = function(sBoxIdArr, formId) {
+	var SelectBoxChain = function(formId) {
+		var sBoxIdArr=findSelectBoxFromForm(formId);
 		var jsonObj = {
 				"data" : [ 
 							{"pId" : "init","id" : "init","text" : ""}, 
@@ -42,30 +43,20 @@ div {
 							]
 					};
 		this.init = function() {
-			//-----------------셀렉트 옵션 초기화-----------------
-			setBoxOption(sBoxIdArr[0], '0000');
-			for (var i = 1; i < sBoxIdArr.length; i++) {
-				setBoxOption(sBoxIdArr[i], 'init');
-			}
-			//-----------------이벤트리스너 달아주기-----------------
-			var selectBoxes = document.getElementById(formId);//selectbox만 들어 있는 form
+			//-----------------셀렉트 옵션 초기화 및 이벤트 리스너 달아주기-----------------
 			for (var i = 0; i < sBoxIdArr.length; i++) {
-				selectBoxes[i].addEventListener("change", (function(formLength, j) {
-					return function() {//onChange 대상자에 뒤쪽 박스 연결
-						for (var i = j; i < formLength; i++) {
-							change(sBoxIdArr[i]);
+				setBoxOption(sBoxIdArr[i], 'init');//초기화값
+				var selectBoxe = document.getElementById(sBoxIdArr[i]);
+				selectBoxe.addEventListener("change", (function(j) {
+					return function() {//onChange 대상자에 연결된 뒤쪽 박스 모두 체인지
+						for (var i = sBoxIdArr.indexOf(sBoxIdArr[j]) + 1; i < sBoxIdArr.length; i++) {//i는 change한 박스의 다음 박스
+							var preSelBox = document.getElementById(sBoxIdArr[i - 1]);//change한 박스
+							setBoxOption(sBoxIdArr[i], preSelBox.value);
 						}
 					};
-				})(sBoxIdArr.length, i));
+				})(i));
 			}
-		}
-		//-----------------셀렉트 박스 체인지 이벤트 발생시-----------------
-		function change(selId) {//onChange 대상자에 연결된 뒤쪽 박스 모두 체인지
-			for (var i = sBoxIdArr.indexOf(selId) + 1; i < sBoxIdArr.length; i++) {
-				var preSelBox = document.getElementById(sBoxIdArr[i - 1]);
-				setBoxOption(sBoxIdArr[i], preSelBox.value);
-			}
-
+			setBoxOption(sBoxIdArr[0], '0000');//첫번째 박스 옵션값 셋팅
 		}
 		//-----------------셀렉트 박스 옵션 넣어주기-----------------
 		function setBoxOption(selId, selPidValue) {
@@ -81,12 +72,21 @@ div {
 				}
 			}
 		}
+		//-----------------form의 셀렉트박스를 찾아 이름배열 만들기-----------------
+		function findSelectBoxFromForm(formId){
+			var tempArr=[];
+			var Boxes = document.getElementById(formId);
+			for (var i = 0; i < Boxes.length; i++) {
+				if (Boxes[i].type == "select-one") {
+					tempArr.push(Boxes[i].id);
+				}
+			}
+			return tempArr;
+		}
 		this.init();
 	}
-
 	window.onload = function() {
-		var sBoxIdArr = [ 'sel_1', 'sel_2', 'sel_3', 'sel_4' ];
-		var boxForm = new SelectBoxChain(sBoxIdArr, 'selectBoxes');
+		var boxForm = new SelectBoxChain('selectBoxes');
 	}
 </script>
 </head>
