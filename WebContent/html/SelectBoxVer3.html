@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>SelectBox</title>
 <style>
+/* accordion버튼 */
 button.accordion {
     background-color: orange;
     color: #444;
@@ -37,7 +38,31 @@ div.panel {
     transition: max-height 0.2s ease-out;
     text-align: center;
 }
+
+/* 애니메이션 버튼 */
+.button {
+  padding: 15px 25px;
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
 </style>
+<script src="http://maps.googleapis.com/maps/api/js"> //Load the Google API
+</script>
 <script>
 	var SelectBoxChain = function(sBoxIdArr) {
 		var jsonObj = {
@@ -102,7 +127,18 @@ div.panel {
 	window.onload = function() {
 		var sBoxIdArr = [ 'sel_1', 'sel_2', 'sel_3', 'sel_4' ];
 		var boxForm = new SelectBoxChain(sBoxIdArr);
+		
 	}
+	
+	function initialize() {//구글맵 초기화
+		  var mapProp = {
+		    center:new google.maps.LatLng(37.250943, 127.028344),//맵의 중심
+		    zoom:8,//줌레벨
+		    mapTypeId:google.maps.MapTypeId.ROADMAP//맵타입
+		  };
+		  var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);//맵생성
+		}
+	google.maps.event.addDomListener(window, 'load', initialize);//DOM 리스너를 추가하여 페이지가 로드될 때, initialize() 함수가 실행되게 합니다.
 </script>
 </head>
 <body>
@@ -117,7 +153,19 @@ div.panel {
 		</form>
 		<br>
 	</div>
-	<script>
+	
+	<button class="accordion">구글 맵 예제</button>
+	<div class="panel">
+		<div id="googleMap" style="width: 60%; height: 350px; float: center; margin-left: 20%;margin-right: 20%;"></div>
+		<br>
+	</div>
+	
+	<button class="accordion">애니메이션 버튼 예제 </button>
+	<div class="panel">
+		<button class="button">Click Me</button>
+	</div>
+	
+	<script>//accordion버튼 스크립트
 	var acc = document.getElementsByClassName("accordion");
 	var i;
 
@@ -125,13 +173,16 @@ div.panel {
 	  acc[i].onclick = function() {
 	    this.classList.toggle("active");
 	    var panel = this.nextElementSibling;
+	    panel.style.padding="0em";
 	    if (panel.style.maxHeight){
 	      panel.style.maxHeight = null;
 	    } else {
-	      panel.style.maxHeight = panel.scrollHeight + "px";
+	      panel.style.maxHeight = panel.scrollHeight+50+ "px";
+	      panel.style.padding="2em";
 	    } 
 	  }
 	}
 	</script>
+	
 </body>
 </html>
