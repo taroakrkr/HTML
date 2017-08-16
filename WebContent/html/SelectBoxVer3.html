@@ -15,7 +15,6 @@ div {
 	var SelectBoxChain = function(sBoxIdArr) {
 		var jsonObj = {
 				"data" : [ 
-							{"pId" : "init","id" : "init","text" : ""}, 
 							{"pId" : "0000","id" : "1000","text" : "1번"}, 
 							{"pId" : "0000","id" : "2000","text" : "2번"}, 
 							{"pId" : "0000","id" : "3000","text" : "3번"},
@@ -44,7 +43,7 @@ div {
 		this.init = function() {
 			//-----------------셀렉트 옵션 초기화 및 이벤트 리스너 달아주기-----------------
 			for (var i = 0; i < sBoxIdArr.length; i++) {
-				setBoxOption(sBoxIdArr[i], 'init');//초기화값
+				setBoxOption(sBoxIdArr[i], '');//초기화값
 				var selectBoxe = document.getElementById(sBoxIdArr[i]);
 				selectBoxe.addEventListener("change", (function(j) {
 					return function() {//onChange 대상자에 연결된 뒤쪽 박스 모두 체인지
