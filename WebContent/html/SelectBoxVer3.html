@@ -5,6 +5,7 @@
 <title>SelectBox</title>
 <style>
 /* accordion버튼 */
+/* 기본상태 */
 button.accordion {
     background-color: orange;
     color: #444;
@@ -17,9 +18,11 @@ button.accordion {
     font-size: 15px;
     transition: 0.4s;
 }
+/* 눌린 상태, 커서가 위치한 상태 */
 button.accordion.active, button.accordion:hover {
     background-color: #ffe066;
 }
+/* 누르기전 아이콘 */
 button.accordion:after {
     content: "click!";
     color: #777;
@@ -27,9 +30,11 @@ button.accordion:after {
     float: right;
     margin-left: 5px;
 }
+/* 누른후 아이콘 */
 button.accordion.active:after {
     content: "\2212";
 }
+/* 내용 */
 div.panel {
     padding: 0 18px;
     background-color: #fff0b3;
@@ -53,7 +58,7 @@ div.panel {
   border-radius: 15px;
   box-shadow: 0 9px #997a00;
 }
-/* 커서가 위치할 때 */
+/* 커서가 위치한 상태 */
 .button:hover {background-color: #ffcc00}
 /* 눌린 상태 */
 .button:active {
@@ -170,7 +175,6 @@ div.panel {
 	<script>//accordion버튼 스크립트
 	var acc = document.getElementsByClassName("accordion");
 	var i;
-
 	for (i = 0; i < acc.length; i++) {
 	  acc[i].onclick = function() {
 	    this.classList.toggle("active");
@@ -185,8 +189,5 @@ div.panel {
 	  }
 	}
 	</script>
-	
-	
-
 </body>
 </html>
