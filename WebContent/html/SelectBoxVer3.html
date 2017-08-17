@@ -152,7 +152,7 @@ div.panel {
 		this.init();
 	}
 	window.onload = function() {
-		var sBoxIdArr = [ 'sel_1', 'sel_2', 'sel_3', 'sel_4' ];
+		var sBoxIdArr = [ 'first', 'second', 'third', 'fourth' ];
 		var boxForm = new SelectBoxChain(sBoxIdArr);
 		var clickButton = document.getElementById('initButton');
 		clickButton.addEventListener("click", function(){boxForm.init();document.getElementById("info").value=boxForm.getInfo();});
@@ -178,10 +178,10 @@ div.panel {
 	<div class="panel">
 		<h1>SelectBox 연결 예제</h1>
 		<form id=selectBoxes>
-			<select id="sel_1"></select> 
-			<select id="sel_2"></select> 
-			<select id="sel_3"></select> 
-			<select id="sel_4"></select>
+			<select id="first"></select> 
+			<select id="second"></select> 
+			<select id="third"></select> 
+			<select id="fourth"></select>
 		</form>
 		<br>
 	</div>
