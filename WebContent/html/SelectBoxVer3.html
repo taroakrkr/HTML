@@ -76,6 +76,7 @@ div.panel {
 							{"pId" : "0000","id" : "1000","text" : "1번"}, 
 							{"pId" : "0000","id" : "2000","text" : "2번"}, 
 							{"pId" : "0000","id" : "3000","text" : "3번"},
+							{"pId" : "0000","id" : "4000","text" : "전라남도"},
 							//-----------------------------------
 							{"pId" : "1000","id" : "1100","text" : "1-1번"}, 
 							{"pId" : "1000","id" : "1200","text" : "1-2번"},
@@ -87,12 +88,17 @@ div.panel {
 							{"pId" : "3000","id" : "3100","text" : "3-1번"}, 
 							{"pId" : "3000","id" : "3200","text" : "3-2번"},
 							//-----------------------------------
+							{"pId" : "4000","id" : "4100","text" : "순천시"},
+							//-----------------------------------
 							{"pId" : "1100","id" : "1110","text" : "1-1-1번"}, 
 							{"pId" : "1100","id" : "1120","text" : "1-1-2번"},
 							//-----------------------------------
 							{"pId" : "1110","id" : "1111","text" : "1-1-1-1번"}, 
 							{"pId" : "1110","id" : "1112","text" : "1-1-1-2번"},
 							{"pId" : "1120","id" : "1121","text" : "1-1-2-1번"},
+							//-----------------------------------
+							{"pId" : "4100","id" : "4110","text" : "조례동"},
+							{"pId" : "4110","id" : "4111","text" : "1533-45번지"},
 							//-----------------------------------
 							{"pId" : "2100","id" : "2110","text" : "2-1-1번"}, 
 							{"pId" : "2100","id" : "2120","text" : "2-1-2번"} 
@@ -105,8 +111,8 @@ div.panel {
 				var selectBoxe = document.getElementById(sBoxIdArr[i]);
 				selectBoxe.addEventListener("change", (function(j) {
 					return function() {//onChange 대상자에 연결된 뒤쪽 박스 모두 체인지
-						for (var i = sBoxIdArr.indexOf(sBoxIdArr[j]) + 1; i < sBoxIdArr.length; i++) {//i는 change한 박스의 다음 박스
-							var preSelBox = document.getElementById(sBoxIdArr[i - 1]);//change한 박스
+						for (var i = sBoxIdArr.indexOf(sBoxIdArr[j]) + 1; i < sBoxIdArr.length; i++) {//i는 change한 박스의 다음 박스 부터
+							var preSelBox = document.getElementById(sBoxIdArr[i - 1]);//change한 박스 부터
 							setBoxOption(sBoxIdArr[i], preSelBox.value);
 						}
 					};
@@ -128,13 +134,29 @@ div.panel {
 				}
 			}
 		}
+		this.getInfo = function(){
+			var text = '';
+			for(var i = 0; i < sBoxIdArr.length; i++){
+				var selBox = document.getElementById(sBoxIdArr[i]);
+				for(var j = 0; j<selBox.length;j++){
+					if(selBox[j].selected&&selBox[j].text!='::선택::'){	
+						text = text + selBox[j].text +' ';
+					}
+				}
+			}
+			return text;
+		}
 		this.init();
 	}
 	window.onload = function() {
 		var sBoxIdArr = [ 'sel_1', 'sel_2', 'sel_3', 'sel_4' ];
 		var boxForm = new SelectBoxChain(sBoxIdArr);
 		var clickButton = document.getElementById('initButton');
-		clickButton.addEventListener("click", function(){boxForm.init();});
+		clickButton.addEventListener("click", function(){boxForm.init();document.getElementById("info").value=boxForm.getInfo();});
+		var infoButton = document.getElementById('infoButton');
+		infoButton.addEventListener("click", function(){
+			document.getElementById("info").value=boxForm.getInfo();
+		});
 	}
 	
 	function initialize() {//구글맵 초기화
@@ -163,13 +185,16 @@ div.panel {
 	
 	<button class="accordion">애니메이션 버튼 예제 </button>
 	<div class="panel">
-		<button class="button" id = "initButton">SelectBox 예제 초기화</button>
+		<button class="button" id = "initButton">초기화</button>
+		<button class="button" id = "infoButton">정보 출력</button>
+		<p>정보 <input type="text" id="info" placeholder="select박스 정보가 표시됩니다" style="margin-top:2em; width: 20%;text-align: center;"/></p>
 	</div>
 	
 	<button class="accordion">구글 맵 예제</button>
 	<div class="panel">
 		<div id="googleMap" style="width: 60%; height: 350px; float: center; margin-left: 20%;margin-right: 20%;"></div>
 		<br>
+		<p>-주소검색 기능 추가 예정-</p>
 	</div>
 	
 	<script>//accordion버튼 스크립트
