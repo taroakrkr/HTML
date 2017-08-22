@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+(function(){
+	var obj = {data:[1,2,3],
+			validDate:"20170823"};
+	var property = getProperty();
+// 	var data = obj.property; //자바스크립트 잘모르는 사람이 이렇게 했다가 안되니까 eval을 쓴다
+// 	var data = eval('obj.'+property);//eval은 쓰지말자
+	var data = obj[property];// 표현식[표현식]
+	console.dir(data);
+	function getProperty(){
+		return "data";
+	}
+})();
+(function (){
+	var obj={data:{innerData:{realData:1234}}};
+	(function inner(){
+		with(obj.data){//이것도 쓰지말자
+			console.log(innerData.realData);
+		}
+	})();
+	
+})();
+// Execution Context
+// 	Lexical Environment
+// 		Environment Record
+// 			Declarative Environment Record - I.R 식별자 레솔루션
+// 			Object Environment Records
+// 		Outer Environment Reference
+// 	Variable Environment
+// 	This binding
+</script>
+</head>
+<body>
+
+</body>
+</html>
