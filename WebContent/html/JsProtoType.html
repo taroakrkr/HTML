@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+(function(){
+	function Person(arg){//함수는1급 객체, Person자체도 객체 프로토타입은 Function의 프로토타입, !!!!!!! 함수도 객체다 중요 !!!!!!!
+		this.name = arg;
+// 		this.getName = function(){
+// 			return this.name;
+// 		}
+	}
+	Function.prototype.method = function(name,func){//Function객체의 프로토타입에 메서드 프로퍼티를 집어넣음
+		this.prototype[name]=func;
+	}
+	
+	Person.method("setName", function(value){
+		this.name = value;
+	});
+	Person.method("getName", function(){
+		return this.name;
+	});
+	
+	function Student(arg){
+		this.DateOfAdmission=arg;
+	}
+	
+	function F(){};
+	F.prototype = Person.prototype;
+	Student.prototype = new F();
+	Student.prototype.constructor = Student;
+	Student.super = Person.prototype;
+	
+	var me = new Student('20100301');
+	me.setName("zzz");
+	console.log(me.getName());
+	console.dir(me);
+	
+})();
+</script>
+</head>
+<body>
+
+</body>
+</html>
