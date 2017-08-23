@@ -5,13 +5,32 @@
 <title>Insert title here</title>
 <script src="../js/jquery-3.2.1.js"></script>
 <script>
-	
+	$(function() {
+		$.fn.userToggleClass = function(className) {
+			return this.each(function() {
+				if ($(this).hasClass(className)) {
+					$(this).removeClass(className);
+				} else {
+					$(this).addClass(className);
+				}
+			});
+		}
+		$("div").userToggleClass("test");
+		$("#colorChangeButton").on("click", function() {
+			$("div").userToggleClass("test");
+		})
+	});
 </script>
 <style>
-
+div.test {
+	background-color: lightgreen;
+}
 </style>
 </head>
 <body>
-
+	<div>div</div>
+	<div class="test">div class="test"</div>
+	<div>div2</div>
+	<input type="button" value="색변경" id="colorChangeButton" />
 </body>
 </html>
