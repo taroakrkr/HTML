@@ -5,21 +5,29 @@
 <title>Insert title here</title>
 <script src="../js/jquery-3.2.1.js"></script>
 <script>
-	$(function() {
+	(function($) {
 		$.fn.userToggleClass = function(className) {
 			return this.each(function() {
-				if ($(this).hasClass(className)) {
-					$(this).removeClass(className);
+				var $ele = $(this);
+				if ($ele.hasClass(className)) {
+					$ele.removeClass(className);
 				} else {
-					$(this).addClass(className);
+					$ele.addClass(className);
 				}
 			});
 		}
+	})(jQuery);
+	
+	$(function() {
 		$("div").userToggleClass("test");
 		$("#colorChangeButton").on("click", function() {
 			$("div").userToggleClass("test");
-		})
+		});
 	});
+	
+	//$(this).toggleClass("bar")
+	//this.classList.toggle("bar");
+	
 </script>
 <style>
 div.test {
@@ -31,6 +39,6 @@ div.test {
 	<div>div</div>
 	<div class="test">div class="test"</div>
 	<div>div2</div>
-	<input type="button" value="색변경" id="colorChangeButton" />
+	<input type="button" value="색 변경" id="colorChangeButton" />
 </body>
 </html>
