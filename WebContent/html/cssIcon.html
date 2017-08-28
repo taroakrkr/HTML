@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<style>
+span {
+	height: 40px;
+	width: 40px;
+	display: inline-block;;
+	position: relative;
+}
+
+.demoSpan1:before {
+	content: '';
+	height: 0;
+	width: 0;
+/* 	display: block; */
+	display: inline-block;
+	border: 10px transparent solid;
+	border-right-width: 0;
+	border-left-color: #333;
+	position: absolute;
+	top: 10px;
+	left: 16px;
+}
+</style>
+</head>
+<body>
+<div><span>1번</span><span class="demoSpan1"> </span></div>
+	
+</body>
+</html>

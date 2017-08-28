@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+.menu-active {
+	display: block;
+	position: absolute;
+	z-index: 10;
+	border: 1px solid #a2c3c3;
+	border-radius: 5px;  
+	width: auto;
+/* 	padding: 0px 10px; */
+	background-color: #e0ebeb;
+}
+</style>
+<script>
+var contextMenu = (function(pMenuEleId, pMenuObj){
+	var menuEleObj = null;
+	pMenuObj = pMenuObj || [{id:"10000",pid:"",name:"그룹",func:function(){alert("그룹");}},
+	                 {id:"20000",pid:"",name:"북한",func:function(){alert("북한");}},
+	                 {id:"21001",pid:"20000",name:"평양",func:function(){alert("평양");}},	                 
+	                 {id:"11001",pid:"10000",name:"그룹설정",func:function(){alert("그룹설정");}},
+	                 {id:"11002",pid:"10000",name:"그룹해제1",func:function(){alert("그룹해제");}},
+	                 {id:"11101",pid:"11001",name:"그룹설정-1",func:function(){alert("그룹설정-1");}},
+	                 ];
+	
+	var menuDivArr = [];
+	var menuItemDataValue = "123456789!@#$%";
+	
+ 	return {init:init,buildMenu:buildMenu};
+
+	function init(){
+		menuEleObj = document.getElementById(pMenuEleId);
+		menuEleObj.oncontextmenu = contextHandler;
+		document.addEventListener("click",documentEventHandler);
+	};
+	
+	function documentEventHandler(e){
+		// 페이지의 다른 곳이 클릭 되었을 경우에는 메뉴가 사라지도록 한다.
+		if ( e.target.id != pMenuEleId && !e.target.dataMenu ){
+			removeAllMenuDiv();			
+		}
+	}
+	
+	function isMenuDrawn(){
+		if ( menuDivArr.length > 0 ){
+			return true;
+		}
+		return false;		
+	}
+	
+	function contextHandler(e){
+		if ( isMenuDrawn() ){
+			removeAllMenuDiv();
+		}
+		var menuDivObj = buildMenu("");
+		var rect = this.getBoundingClientRect();
+		menuDivObj.style.top = rect.bottom+document.body.scrollTop + document.documentElement.scrollTop+'px';
+		menuDivObj.style.left = rect.left+document.body.scrollLeft + document.documentElement.scrollLeft+'px';
+		// 이벤트 상위로 전달하지 않음.
+		if ( e.stopPropagation ){
+			e.stopPropagation();
+		}else{
+			e.cancelBubble = true;
+		}
+		return false;
+	}
+	
+	function liClickHandler(){
+		// li가 클릭 됐을 경우 해당 div의 id를 파라미터로 던져주고, menuDivArr에서 찾은 다음 그 이하는 모두 clear 시켜주면 끝남. 
+		removeSubMenus(this.parentNode.parentNode.id);
+		
+		var menuObj = findMenuItem(this.id);
+		
+		if ( this["data-leaf"] == true ){
+			if ( typeof menuObj.func == 'function' ){
+				menuObj.func();
+				removeAllMenuDiv();
+			}
+		}else{
+			var menuDivObj = buildMenu(menuObj.id);
+			var rect = this.getBoundingClientRect();
+			menuDivObj.style.top = rect.top+document.body.scrollTop + document.documentElement.scrollTop+'px';
+			menuDivObj.style.left = rect.right+document.body.scrollLeft + document.documentElement.scrollLeft+'px';			
+		}
+		if ( event.stopPropagation ){
+			event.stopPropagation();
+		}else{
+			event.cancelBubble = true;
+		}
+	}
+	
+	function addMenuDivNameToArr(pItem){
+		menuDivArr.push(pItem);
+	}
+
+	function removeAllMenuDiv(){
+		for(var i=0; i<menuDivArr.length; i++){
+			var menuDivId = menuDivArr[i];
+			document.getElementById(menuDivId).remove();
+		}
+		menuDivArr.length=0;
+	}	
+	
+	function removeSubMenus(pId){
+		var foundIndex = -1;
+		for(var i=0; i<menuDivArr.length; i++){
+			if ( pId == menuDivArr[i] ){
+				foundIndex = i;				
+			}
+		}
+		if ( foundIndex != -1){
+			for(i=foundIndex+1; i<menuDivArr.length; i++){
+				document.getElementById(menuDivArr[i]).remove();				
+			}
+			menuDivArr.splice(foundIndex+1,menuDivArr.length-foundIndex+1);
+		}
+	}
+
+	// id를 던져주면 하위 메뉴를 찾아서 리턴 arr
+	function findChildNodes(pId){
+		var nodes = [];
+		for(var i=0; i<pMenuObj.length; i++){
+			if ( pId == pMenuObj[i]['pid'] ){
+				nodes.push(pMenuObj[i]);
+			}
+		}
+		return nodes;
+	}
+	
+	function findMenuItem(pId){
+		var node = null;
+		for(var i=0; i<pMenuObj.length; i++){
+			if ( pId == pMenuObj[i]['id'] ){
+				node = pMenuObj[i];
+			}
+		}
+		return node;
+	}
+	
+	function hasChildNodes(pId){
+		var isFound = false;
+		for(var i=0; i<pMenuObj.length; i++){
+			if ( pId == pMenuObj[i]['pid'] ){
+				isFound = true;
+				break;
+			}
+		}
+		return isFound;
+	}
+	// pId로 전달된 child node를 찾아서 메뉴를 구성해 준다.
+	function buildMenu(pId){
+//		removeAllMenuDiv();
+		var nodesArr = findChildNodes(pId);
+		var divId = genGuid();
+		//새로 생성된 menu div id를 menuDivArr에 추가한다.
+		addMenuDivNameToArr(divId); 
+		// html을 생성한다.
+		return buildHTML(nodesArr, divId);
+	}
+	
+	function buildHTML(pNodeArr, pDivId){
+		var divObj = document.createElement("div");
+		divObj.id = pDivId;
+		divObj.className = 'menu-active';
+		
+		var ulObj = document.createElement("ul");
+		for(var i=0; i<pNodeArr.length; i++){
+			var liObj = document.createElement("li");
+			liObj.id = pNodeArr[i].id;
+			liObj.dataMenu = menuItemDataValue;
+			if ( hasChildNodes(pNodeArr[i].id) ){
+				liObj.innerHTML = pNodeArr[i].name+"\t▶";
+				liObj["data-leaf"] = false;
+			}else{
+				liObj.innerHTML = pNodeArr[i].name;
+				liObj["data-leaf"] = true;				
+			}
+			liObj.onclick = liClickHandler;
+			ulObj.appendChild(liObj);
+		}
+		
+		divObj.appendChild(ulObj);
+		document.body.appendChild(divObj);
+		return divObj;
+	}
+	
+	function genGuid()
+	{
+	    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+	        return v.toString(16);
+	    });
+	}		
+	
+})("menuDiv");
+
+window.onload = function(){
+	contextMenu.init("");	
+}
+</script>
+</head>
+<body>
+<!-- <div id="menuDiv" style="border:1px solid green;height:50px;"> -->
+<!-- </div> -->
+<input id="" type=text>
+<input id="" type=text>
+<input id="menuDiv" type=text>
+</body>
+</html>

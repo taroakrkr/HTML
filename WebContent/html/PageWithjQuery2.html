@@ -21,7 +21,7 @@
 	$(function() {
 		$("div").userToggleClass("test");
 		$("#colorChangeButton").on("click", function() {
-			$("div").userToggleClass("test");
+			$("div").userToggleClass("test").css({color:"hotpink"});//userToggleClass가 this 객체!!를 리턴했기때문에 뒤에 .으로 더 이어서 붙일 수 있다. 함수 체이닝
 		});
 	});
 	

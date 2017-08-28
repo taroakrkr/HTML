@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../js/jquery-3.2.1.js"></script>
+<script>
+	$(function() {
+// 		$("div>div").eq(1).css({backgroundColor : "lightblue", height:"50px"}).parent().css({"background-color" : "hotpink", height:"250px"});
+
+// 		$("div:has(div):eq(1)").css({"background-color" : "hotpink", height:"250px"});
+// 		$("body>div").last().children().first().css({backgroundColor : "lightblue", height:"50px"});
+		
+		$($("body>div")[1]).find("div").first().css({backgroundColor : "lightblue", height:"50px"}).next().css({backgroundColor : "lightgray", height:"50px"}).end().end().end().css({"background-color" : "hotpink", height:"250px"});//end는 필터 끝내기(바로직전으로)
+		
+	});
+</script>
+</head>
+<body>
+	<div>hotpink
+		<div>lightblue</div>
+	</div>
+	<div>hotpink
+		<div>lightblue</div>
+		<div>gogogogogo</div>
+	</div>
+	<div id="div1"></div>
+
+</body>
+</html>

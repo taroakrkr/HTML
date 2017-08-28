@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../js/jquery-3.2.1.js"></script>
+<script>
+(function(global){
+	var contextMenu = function(target, menuData){
+		(function init(){
+			$(target).bind("contextmenu", function(event) {
+				event.preventDefault();
+				$("div.custom-menu").remove();
+				var str = "<div class='custom-menu'>"
+				for(var i = 0 ; i<menuData.length ; i++){
+					if(menuData[i].pid==""){						
+						str = str+"<div class = 'box' id='"+menuData[i].id+"'>"+menuData[i].name+"</div>";
+					}
+				}
+				str = str + "</div>";
+				$(str).appendTo(target).css({
+					top : event.pageY + "px",
+					left : event.pageX + "px"
+				});
+				var positionX = (document.body.clientWidth) - event.pageX;
+				var dir=null;
+				var boxW=100;//박스 한개 가로길이
+				if(positionX>boxW*3){
+					dir = "R";
+				}else{
+					dir = "L";
+				}
+				for(var i = 0 ; i<menuData.length; i++ ){
+					setSubMenu(menuData[i].id,dir);
+				}
+			})
+			.bind("click", function(event) {
+				$("div.custom-menu").remove();
+			});
+		})();
+		var setSubMenu = function(thisDiv,dir) {
+			var convertjQ = "#"+thisDiv;
+			var $thisDiv = $(convertjQ);
+			var x=0;
+			if(dir=="L"){
+				x=-$thisDiv.width();
+			}else{
+				x=$thisDiv.width();
+			}
+			for(var i = 0 ; i<menuData.length; i++ ){
+				if(thisDiv == menuData[i].id && menuData[i].root=="n"){
+					$("<div class='custom-menu'></div>").appendTo(convertjQ).css({
+						top : -$thisDiv.height()+2+"px",
+						left : x +"px",
+						position: "relative",
+						display:"none"
+					});
+				
+					for(var i = 0 ; i<menuData.length; i++ ){
+						if(thisDiv==menuData[i].pid){
+							var str = "<div class = 'box' id = '"+menuData[i].id+"'>"+menuData[i].name+"</div>";
+							$(str).appendTo($thisDiv.children(".custom-menu"));
+						}
+					}
+				}
+			}
+			
+			$thisDiv.on("click",function(ev){
+				for(var i = 0 ; i<menuData.length; i++ ){
+					if(menuData[i].id==thisDiv){
+						menuData[i].func();
+					}
+				}
+				ev.stopPropagation();
+			})
+			$thisDiv.hover(function(){$(this).children(".custom-menu").css({display:"inline-block"});},function(ev){$(this).children(".custom-menu").css({display:"none"});});
+		};
+	}; 
+	
+	global._ContextModule = contextMenu;
+})(typeof window != undefined ? window:this);
+
+
+$(function(){
+	var pMenuObj = {"area1": [{"id":"100","pid":"",name:"메인1\t▶",func:function(){alert("1");},root : "n"},
+	   	                 {"id":"200","pid":"",name:"메인2\t▶",func:function(){alert("2");},root : "n"},
+	   	                 {"id":"300","pid":"",name:"메인3",func:function(){alert("3");},root : "y"},	                 
+	   	                 {"id":"110","pid":"100",name:"1-1\t▶",func:function(){alert("1-1");},root : "n"},
+	   	                 {"id":"120","pid":"100",name:"1-2",func:function(){alert("1-2");},root : "y"},
+	   	                 {"id":"210","pid":"200",name:"2-1",func:function(){alert("2-1");},root : "y"},
+	   	                 {"id":"111","pid":"110",name:"1-1-1",func:function(){alert("1-1-1");},root : "y"},
+	   	                 ],
+	   	            "area2": [{"id":"100","pid":"",name:"밑1\t▶",func:function(){alert("1");},root : "n"},
+	   	   	                 {"id":"200","pid":"",name:"밑2\t▶",func:function(){alert("2");},root : "n"},
+	   	   	                 {"id":"300","pid":"",name:"밑3",func:function(){alert("3");},root : "y"},	                 
+	   	   	                 {"id":"110","pid":"100",name:"밑1-1",func:function(){alert("1-1");},root : "y"},
+	   	   	                 {"id":"120","pid":"100",name:"밑1-2",func:function(){alert("1-2");},root : "y"},
+	   	   	                 {"id":"210","pid":"200",name:"밑2-1",func:function(){alert("2-1");},root : "y"}
+	   	   	                 ]}
+	var contextMenu1 = _ContextModule("div.bodyLayer1",pMenuObj.area1);
+	var contextMenu2 = _ContextModule("div.bodyLayer2",pMenuObj.area2);
+	
+});	
+</script>
+<style>
+.custom-menu {
+	z-index: 1000;
+	position: absolute;
+	background-color: #70db70;
+	border: 1px solid black;
+	width: 100px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+div.box {
+	width: 100%;
+	height: 25px;
+	text-align: justify;
+}
+
+.box:hover {
+	background-color: #d6f5d6;
+}
+
+span {
+	display: inline-block;;
+	position: absolute;
+}
+
+.demoSpan1:before {
+	content: '';
+	height: 0;
+	width: 0;
+	display: inline-block;
+	border: 5px transparent solid;
+	border-right-width: 0;
+	border-left-color: #333;
+	position: absolute;
+	top: 8px;
+	left: 10px;
+}
+
+html, body {
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+}
+
+div.bodyLayer1 {
+	height: 50%;
+	width: 100%;
+	background-color: lightblue;
+	margin: 0;
+	padding: 0;
+}
+div.bodyLayer2 {
+	height: 50%;
+	width: 100%;
+	background-color: lightgray;
+	margin: 0;
+	padding: 0;
+}
+</style>
+</head>
+<body>
+	<div class="bodyLayer1"></div>
+	<div class="bodyLayer2"></div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../js/jquery-3.2.1.js"></script>
+<script>
+	$(document).bind("contextmenu", function(event) {
+		event.preventDefault();
+		$("div.custom-menu").remove();
+		$("<div class='custom-menu'><div class = 'box' id='메인1'>메인1번<span class='demoSpan1'></span></div><div class = 'box' id = '메인2'>메인2번<span class='demoSpan1'></span></div></div>").appendTo("body").css({
+			top : event.pageY + "px",
+			left : event.pageX + "px"
+		});
+		var positionX = (document.body.clientWidth) - event.pageX;
+		var dir=null;
+		var boxW=100;//박스 한개 가로길이
+		if(positionX>boxW*3){
+			dir = "R";
+		}else{
+			dir = "L";
+		}
+		setSubMenu("#메인1",function(){alert("1");},"<div class='custom-menu'><div class = 'box' id='1-1'>1번<span class='demoSpan1'></span></div><div class = 'box' id='1-2'>2번</div>",dir);
+		setSubMenu("#메인2",function(){alert("2");},"<div class='custom-menu'><div class = 'box' id='2-1'>1번</div><div class = 'box' id='2-2'>2번</div>",dir);
+		setSubMenu("#1-1",function(){alert("1-1");},"<div class='custom-menu'><div class = 'box' id='1-1-1'>1번</div><div class = 'box' id='1-1-2'>2번</div>",dir);
+		setSubMenu("#1-1-1",function(){alert("1-1-1");});
+		setSubMenu("#1-1-2",function(){alert("1-1-2");});
+		setSubMenu("#1-2",function(){alert("1-2");});
+		setSubMenu("#2-1",function(){alert("2-1");});
+		setSubMenu("#2-2",function(){alert("2-2");});
+	})
+	.bind("click", function(event) {
+		$("div.custom-menu").remove();
+	});
+	
+	var setSubMenu = function(preDiv,clickFunc,tag,dir) {
+		var $preDiv = $(preDiv);
+		var x=0;
+		if(dir=="L"){
+			x=-$preDiv.width();
+		}else{
+			x=$preDiv.width();
+		}
+		$(tag).appendTo(preDiv).css({
+			top : -$preDiv.height()+2+"px",
+			left : x +"px",
+			position: "relative",
+			display:"none"
+		});//&#x3c;&#x3e
+		$preDiv.on("click",function(ev){
+			clickFunc();
+			ev.stopPropagation();
+		})
+		$preDiv.hover(function(){$(this).children(".custom-menu").css({display:"inline-block"});},function(ev){$(this).children(".custom-menu").css({display:"none"});});
+	};
+</script>
+<style>
+.custom-menu{
+	z-index: 1000;
+	position: absolute;
+	background-color: #70db70;
+	border: 1px solid black;
+	min-width: 100px;
+	width: 100px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+div.box {
+	width: 100%;
+	min-width: 90%;
+	height: 25px;
+	text-align: center;
+}
+
+.box:hover {
+	background-color: #d6f5d6;
+}
+
+span {
+	max-width: 10%;
+	display: inline-block;;
+	position: absolute;
+	text-align: right;
+}
+
+.demoSpan1:before {
+	content: '';
+	height: 0;
+	width: 0;
+	display: inline-block;
+	border: 5px transparent solid;
+	border-right-width: 0;
+	border-left-color: #333;
+	position: absolute;
+	top: 8px;
+	left: 10px;
+}
+
+</style>
+</head>
+<body>
+</body>
+</html>
