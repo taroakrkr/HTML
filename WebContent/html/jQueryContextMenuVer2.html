@@ -5,41 +5,49 @@
 <title>Insert title here</title>
 <script src="../js/jquery-3.2.1.js"></script>
 <script>
-(function(global){
 	var contextMenu = function(target, menuData){
+		for(var i = 0 ; i<menuData.length; i++ ){//root가 아니면 아이콘 추가
+			if(menuData[i].root=="n"){
+				menuData[i].name += '<i id="icon" class="fa fa-caret-square-o-right" aria-hidden="true"></i>';
+			}
+		}
 		(function init(){
 			$(target).bind("contextmenu", function(event) {
 				event.preventDefault();
-				$("div.custom-menu").remove();
+				$("div.custom-menu").remove(); //기존 메뉴 제거
 				var str = "<div class='custom-menu'>"
-				for(var i = 0 ; i<menuData.length ; i++){
+				for(var i = 0 ; i<menuData.length ; i++){//첫 메뉴 셋팅
 					if(menuData[i].pid==""){						
 						str = str+"<div class = 'box' id='"+menuData[i].id+"'>"+menuData[i].name+"</div>";
 					}
 				}
 				str = str + "</div>";
-				$(str).appendTo(target).css({
-					top : event.pageY + "px",
-					left : event.pageX + "px"
-				});
-				var positionX = (document.body.clientWidth) - event.pageX;
+				var positionX = (document.body.clientWidth) - event.pageX;//화면 가로 길이
 				var dir=null;
 				var boxW=100;//박스 한개 가로길이
-				if(positionX>boxW*3){
+				var complement = 0; //오른쪽에 붙었을때 위치보정
+				if(positionX>boxW*3){//서브메뉴 방향설정 메뉴가 3단계까지 있어서 *3
 					dir = "R";
 				}else{
-					dir = "L";
+					dir = "L"
+					if(positionX<boxW){
+						complement = boxW;
+					}else{complement=0;}
 				}
-				for(var i = 0 ; i<menuData.length; i++ ){
+				$(str).appendTo(target).css({ //위치 설정
+					top : event.pageY + "px",
+					left : event.pageX -complement + "px"
+				});
+				for(var i = 0 ; i<menuData.length; i++ ){ //하위메뉴 세팅
 					setSubMenu(menuData[i].id,dir);
 				}
 			})
-			.bind("click", function(event) {
+			.bind("click", function(event) { //왼클릭시 제거
 				$("div.custom-menu").remove();
 			});
 		})();
-		var setSubMenu = function(thisDiv,dir) {
-			var convertjQ = "#"+thisDiv;
+		var setSubMenu = function(thisDiv,dir) {//해당 아이디 함수할당, 하위메뉴 할당
+			var convertjQ = "#"+thisDiv;//jQuery에서 사용하기위해 #추가
 			var $thisDiv = $(convertjQ);
 			var x=0;
 			if(dir=="L"){
@@ -48,7 +56,7 @@
 				x=$thisDiv.width();
 			}
 			for(var i = 0 ; i<menuData.length; i++ ){
-				if(thisDiv == menuData[i].id && menuData[i].root=="n"){
+				if(thisDiv == menuData[i].id && menuData[i].root=="n"){//루트 메뉴이면 추가 안함
 					$("<div class='custom-menu'></div>").appendTo(convertjQ).css({
 						top : -$thisDiv.height()+2+"px",
 						left : x +"px",
@@ -65,7 +73,7 @@
 				}
 			}
 			
-			$thisDiv.on("click",function(ev){
+			$thisDiv.on("click",function(ev){//함수 할당
 				for(var i = 0 ; i<menuData.length; i++ ){
 					if(menuData[i].id==thisDiv){
 						menuData[i].func();
@@ -73,35 +81,34 @@
 				}
 				ev.stopPropagation();
 			})
+			//호버 할당
 			$thisDiv.hover(function(){$(this).children(".custom-menu").css({display:"inline-block"});},function(){$(this).children(".custom-menu").css({display:"none"});});
 		};
 	}; 
-	
-	global._ContextModule = contextMenu;
-})(typeof window != undefined ? window:this);
 
 
 $(function(){
-	var pMenuObj = {"area1": [{"id":"100","pid":"",name:"메인1\t▶",func:function(){alert("1");},root : "n"},
-	   	                 {"id":"200","pid":"",name:"메인2\t▶",func:function(){alert("2");},root : "n"},
+	var menuData = {"area1": [{"id":"100","pid":"",name:"메인1",func:function(){},root : "n"},
+	   	                 {"id":"200","pid":"",name:"메인2",func:function(){},root : "n"},
 	   	                 {"id":"300","pid":"",name:"메인3",func:function(){alert("3");},root : "y"},	                 
-	   	                 {"id":"110","pid":"100",name:"1-1\t▶",func:function(){alert("1-1");},root : "n"},
+	   	                 {"id":"110","pid":"100",name:"1-1",func:function(){},root : "n"},
 	   	                 {"id":"120","pid":"100",name:"1-2",func:function(){alert("1-2");},root : "y"},
 	   	                 {"id":"210","pid":"200",name:"2-1",func:function(){alert("2-1");},root : "y"},
 	   	                 {"id":"111","pid":"110",name:"1-1-1",func:function(){alert("1-1-1");},root : "y"},
 	   	                 ],
-	   	            "area2": [{"id":"100","pid":"",name:"밑1\t▶",func:function(){alert("1");},root : "n"},
-	   	   	                 {"id":"200","pid":"",name:"밑2\t▶",func:function(){alert("2");},root : "n"},
+	   	            "area2": [{"id":"100","pid":"",name:"밑1",func:function(){},root : "n"},
+	   	   	                 {"id":"200","pid":"",name:"밑2",func:function(){},root : "n"},
 	   	   	                 {"id":"300","pid":"",name:"밑3",func:function(){alert("3");},root : "y"},	                 
 	   	   	                 {"id":"110","pid":"100",name:"밑1-1",func:function(){alert("1-1");},root : "y"},
 	   	   	                 {"id":"120","pid":"100",name:"밑1-2",func:function(){alert("1-2");},root : "y"},
 	   	   	                 {"id":"210","pid":"200",name:"밑2-1",func:function(){alert("2-1");},root : "y"}
 	   	   	                 ]}
-	var contextMenu1 = _ContextModule("div.bodyLayer1",pMenuObj.area1);
-	var contextMenu2 = _ContextModule("div.bodyLayer2",pMenuObj.area2);
+	contextMenu("div.bodyLayer1",menuData.area1);
+	contextMenu("div.bodyLayer2",menuData.area2);
 	
 });	
 </script>
+<link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 <style>
 .custom-menu {
 	z-index: 1000;
@@ -109,8 +116,7 @@ $(function(){
 	background-color: #70db70;
 	border: 1px solid black;
 	width: 100px;
-	padding-top: 2px;
-	padding-bottom: 2px;
+	padding: 2px;
 }
 
 div.box {
@@ -136,12 +142,18 @@ div.bodyLayer1 {
 	margin: 0;
 	padding: 0;
 }
+
 div.bodyLayer2 {
 	height: 50%;
-	width: 100%;
+	width: 50%;
 	background-color: lightgray;
 	margin: 0;
 	padding: 0;
+}
+i#icon{
+	float: right;
+	padding-top: 4px;
+	padding-right: 3px;
 }
 </style>
 </head>
