@@ -12,9 +12,19 @@
 			}
 		}
 		(function init(){
-			$(target).bind("contextmenu", function(event) {
+			$(target).bind("contextmenu",function(){contextMenuBind(event);}).bind("click",function(){$("div.contextMenuLayer").remove();});
+		})();
+		function contextMenuBind(event){
 				event.preventDefault();
-				$("div.custom-menu").remove(); //기존 메뉴 제거
+				$("div.contextMenuLayer").remove();//기존메뉴제거
+				$("<div class = 'contextMenuLayer'></div>").bind("click", function() { //왼클릭시 제거
+					$("div.contextMenuLayer").remove();
+				}).bind("contextmenu",function(event){
+					event.preventDefault();
+					return contextMenuBind(event);//우클릭시 제거하고 새로 열기
+				})
+				.css({top:$(target).position().top,left:$(target).position().left,width:$(target).width(),height:$(target).height(),padding:($(target).outerHeight()-$(target).height())})
+				.appendTo(document.body);//를 traget위를 덮도록추가
 				var str = "<div class='custom-menu'>"
 				for(var i = 0 ; i<menuData.length ; i++){//첫 메뉴 셋팅
 					if(menuData[i].pid==""){						
@@ -22,30 +32,27 @@
 					}
 				}
 				str = str + "</div>";
-				var positionX = (document.body.clientWidth) - event.pageX;//화면 가로 길이
+				var xRightSpace = $("div.contextMenuLayer").position().left+$("div.contextMenuLayer").outerWidth() - event.pageX;//이벤트x좌표 오른쪽 공간크기
 				var dir=null;
 				var boxW=100;//박스 한개 가로길이
-				var complement = 0; //오른쪽에 붙었을때 위치보정
-				if(positionX>boxW*3){//서브메뉴 방향설정 메뉴가 3단계까지 있어서 *3
+				var complement = 0; //오른쪽에 붙었을때 위치보정		
+				if(xRightSpace>boxW*3){//서브메뉴 방향설정 메뉴가 3단계까지 있어서 *3
 					dir = "R";
+					complement=0;
 				}else{
 					dir = "L"
-					if(positionX<boxW){
+					if(xRightSpace<boxW){
 						complement = boxW;
 					}else{complement=0;}
 				}
-				$(str).appendTo(target).css({ //위치 설정
-					top : event.pageY + "px",
-					left : event.pageX -complement + "px"
+				$(str).appendTo("div.contextMenuLayer").css({ //위치 설정
+					top : event.pageY -$(target).position().top+ "px",
+					left : event.pageX -$(target).position().left -complement + "px"
 				});
 				for(var i = 0 ; i<menuData.length; i++ ){ //하위메뉴 세팅
 					setSubMenu(menuData[i].id,dir);
 				}
-			})
-			.bind("click", function(event) { //왼클릭시 제거
-				$("div.custom-menu").remove();
-			});
-		})();
+		}
 		var setSubMenu = function(thisDiv,dir) {//해당 아이디 함수할당, 하위메뉴 할당
 			var convertjQ = "#"+thisDiv;//jQuery에서 사용하기위해 #추가
 			var $thisDiv = $(convertjQ);
@@ -72,7 +79,6 @@
 					}
 				}
 			}
-			
 			$thisDiv.on("click",function(ev){//함수 할당
 				for(var i = 0 ; i<menuData.length; i++ ){
 					if(menuData[i].id==thisDiv && menuData[i].func != null){
@@ -102,15 +108,29 @@ $(function(){
 	   	   	                 {"id":"300","pid":"",name:"밑3",func:function(){alert("3");}},	                 
 	   	   	                 {"id":"110","pid":"100",name:"밑1-1",func:function(){alert("1-1");}},
 	   	   	                 {"id":"120","pid":"100",name:"밑1-2",func:function(){alert("1-2");}},
-	   	   	                 {"id":"210","pid":"200",name:"밑2-1",func:function(){alert("2-1");}}
-	   	   	                 ]}
-	contextMenu("div.bodyLayer1",menuData.area1);
-	contextMenu("div.bodyLayer2",menuData.area2);
+	   	   	                 {"id":"210","pid":"200",name:"밑2-1",func:null},
+	   	   	                 {"id":"211","pid":"210",name:"밑2-1-1",func:function(){alert("2-1-1");}}
+	   	   	                 ],
+	   	            "area3": [{"id":"100","pid":"",name:"오른쪽1",func:null},
+	   	   	                 {"id":"200","pid":"",name:"오른쪽2",func:function(){alert("2");}},
+	   	   	                 {"id":"300","pid":"",name:"오른쪽3",func:null},	                 
+	   	   	                 {"id":"110","pid":"100",name:"오른쪽1-1",func:function(){alert("1-1");}},
+	   	   	                 {"id":"120","pid":"100",name:"오른쪽1-2",func:function(){alert("1-2");}},
+	   	   	                 {"id":"310","pid":"300",name:"오른쪽3-1",func:null},
+	   	   	                 {"id":"311","pid":"310",name:"오른쪽3-1-1",func:function(){alert("2-1-1");}}
+	   	   	                 ]
+	}
+	contextMenu("div.body1",menuData.area1);
+	contextMenu("div.body2",menuData.area2);
+	contextMenu("div.body3",menuData.area3);
 	
 });	
 </script>
 <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 <style>
+body{
+	margin: 0;
+}
 .custom-menu {
 	z-index: 1000;
 	position: absolute;
@@ -134,58 +154,84 @@ div.box {
 html, body {
 	height: 100%;
 	width: 100%;
-	overflow: hidden;
+	overflow:hidden;
 }
 
-div.bodyLayer1 {
-	height: 70%;
-	width: 100%;
-	background-color: rgba(102,204,255,0.1);
-	margin: 0;
-	padding: 0;
+div.body1 {
+	height: 40%;
+	width: 96%;
+	background-color: rgba(102, 204, 255, 0.1);
+	margin: 1%;
+	padding: 1%;
 }
 
-div.bodyLayer2 {
+div.body2 {
 	height: 30%;
-	width: 50%;
+	width: 30%;
 	background-color: lightgray;
 	margin: 0;
 	padding: 0;
+	display:inline-block;
 }
-i#icon{
+div.body3 {
+	height: 30%;
+	width: 30%;
+	background-color: lightgray;
+	margin: 0;
+	padding: 0;
+	display:inline-block;
+}
+
+div.contextMenuLayer{
+ 	opacity: .99;
+	z-index: 1100;
+	background-color: rgba(152, 204, 255, 0.5);
+	position: absolute;
+	left: 0;
+	top: 0;
+
+}
+i#icon {
 	float: right;
 	padding-top: 4px;
 	padding-right: 3px;
 }
-header,nav,article{
-background-color: #66ccff;
-border : 1px solid black;
+
+header, nav, article {
+	background-color: #66ccff;
+	border: 1px solid black;
 }
 
-header{
-width: 100%;
-height: 20%;
+header {	
+	width: 100%;
+	height: 20%;
+	float:top;
 }
-article{
-width: 50%;
-height: 70%;
-margin-left: 5%;
-margin-top: 1%;
+
+article {
+	width: 50%;
+	height: 70%;
+	margin-left: 5%;
+	margin-top: 1%;
+	float:left;
 }
-nav{
-width: 20%;
-height: 70%;
-margin-top: 1%;
+
+nav {
+	width: 20%;
+	height: 70%;
+	margin-top: 1%;
+	float:left;
 }
 </style>
 </head>
 <body>
-	<div class="bodyLayer1">
-		<header style="float:top"><h1>헤더</h1></header>
-		<nav style="float:left"><h2>사이드</h2></nav>
-		<article style="float:left"><h2>콘텐츠</h2></article>
+	<div class="body1">
+		<header><h1>헤더</h1></header>
+		<nav><h2>사이드</h2></nav>
+		<article><h2>콘텐츠</h2></article>
 		<nav style="float:right"><h2>사이드2</h2></nav>
 	</div>
-	<div class="bodyLayer2"></div>
+	<div class="body2"></div>
+	<div class="body3"></div>
 </body>
 </html>
