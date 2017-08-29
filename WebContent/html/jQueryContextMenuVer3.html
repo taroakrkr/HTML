@@ -6,13 +6,9 @@
 <script src="../js/jquery-3.2.1.js"></script>
 <script>
 	var contextMenu = function(target, menuData){
-		for(var i = 0 ; i<menuData.length; i++ ){//root가 아니면 아이콘 추가
-			if(menuData[i].func==null){
-				menuData[i].name += '<i id="icon" class="fa fa-caret-square-o-right" aria-hidden="true"></i>';
-			}
-		}
 		(function init(){
 			$(target).bind("contextmenu",function(){contextMenuBind(event);}).bind("click",function(){$("div.contextMenuLayer").remove();});
+			//click바인드는 단일타겟이거나 타겟이 바디일경우 지울것
 		})();
 		function contextMenuBind(event){
 				event.preventDefault();
@@ -27,8 +23,10 @@
 				.appendTo(document.body);//를 traget위를 덮도록추가
 				var str = "<div class='custom-menu'>"
 				for(var i = 0 ; i<menuData.length ; i++){//첫 메뉴 셋팅
+					var icon=null;
+					if(menuData[i].func==null){icon = '<i id="icon" class="fa fa-caret-square-o-right" aria-hidden="true"></i>';}else{icon="";}//서브메뉴있으면 아이콘추가
 					if(menuData[i].pid==""){						
-						str = str+"<div class = 'box' id='"+menuData[i].id+"'>"+menuData[i].name+"</div>";
+						str = str+"<div class = 'box' id='"+menuData[i].id+"'>"+menuData[i].name+icon+"</div>";
 					}
 				}
 				str = str + "</div>";
@@ -63,29 +61,31 @@
 				x=$thisDiv.width();
 			}
 			for(var i = 0 ; i<menuData.length; i++ ){
-				if(thisDiv == menuData[i].id && menuData[i].func==null){//루트 메뉴이면 추가 안함
+				if(thisDiv == menuData[i].id && menuData[i].func==null){//서브 메뉴가 없으면 추가 안함
 					$("<div class='custom-menu'></div>").appendTo(convertjQ).css({
 						top : -$thisDiv.height()+2+"px",
 						left : x +"px",
 						position: "relative",
 						display:"none"
-					});
+					});//메뉴 틀을 안보이는 상태로 추가
 				
 					for(var i = 0 ; i<menuData.length; i++ ){
+						var icon=null;
+						if(menuData[i].func==null){icon = '<i id="icon" class="fa fa-caret-square-o-right" aria-hidden="true"></i>';}else{icon="";}//서브메뉴있으면 아이콘 추가
 						if(thisDiv==menuData[i].pid){
-							var str = "<div class = 'box' id = '"+menuData[i].id+"'>"+menuData[i].name+"</div>";
+							var str = "<div class = 'box' id = '"+menuData[i].id+"'>"+menuData[i].name+icon+"</div>";
 							$(str).appendTo($thisDiv.children(".custom-menu"));
 						}
-					}
+					}//메뉴 틀 안에 박스추가
 				}
 			}
 			$thisDiv.on("click",function(ev){//함수 할당
 				for(var i = 0 ; i<menuData.length; i++ ){
-					if(menuData[i].id==thisDiv && menuData[i].func != null){
+					if(menuData[i].id==thisDiv && menuData[i].func != null){//함수가 있으면 할당해준다
 						menuData[i].func();
 					}
 				}
-				ev.stopPropagation();
+				ev.stopPropagation();//이벤트전파를 막아서 자신의 함수만 실행
 			})
 			//호버 할당
 			$thisDiv.hover(function(){$(this).children(".custom-menu").css({display:"inline-block"});},function(){$(this).children(".custom-menu").css({display:"none"});});
@@ -151,6 +151,17 @@ div.box {
 	background-color: #d6f5d6;
 }
 
+div.contextMenuLayer{
+ 	opacity: .99;
+	z-index: 900;
+ 	background-color: rgba(152, 204, 255, 0.5); 
+/* 	background-color: rgba(0, 0, 0, 0);  */
+	position: absolute;
+	left: 0;
+	top: 0;
+
+}
+
 html, body {
 	height: 100%;
 	width: 100%;
@@ -182,15 +193,6 @@ div.body3 {
 	display:inline-block;
 }
 
-div.contextMenuLayer{
- 	opacity: .99;
-	z-index: 1100;
-	background-color: rgba(152, 204, 255, 0.5);
-	position: absolute;
-	left: 0;
-	top: 0;
-
-}
 i#icon {
 	float: right;
 	padding-top: 4px;
