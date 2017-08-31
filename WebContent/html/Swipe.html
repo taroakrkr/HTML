@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Gamedev Canvas Workshop</title>
+<style>
+* {
+	padding: 0;
+	margin: 0;
+}
+
+canvas {
+	background: #eee;
+	display: block;
+	margin: 0 auto;
+}
+
+header{
+	text-align: center;
+	margin: 10px;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h1>벽돌 깨기!</h1>
+	</header>
+	<canvas id="myCanvas" width="480" height="320"></canvas>
+
+	<script>
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		
+		var x = canvas.width / 2;
+		var y = canvas.height-15;
+		var dx = 2;
+		var dy = -2;
+		var ballRadius = 6;
+						
+		var brickRowCount = 3;
+		var brickColumnCount = 5;
+		var brickWidth = 65;
+		var brickHeight = 30;
+		var brickPadding = 30;
+		var brickOffsetTop = 30;
+		var brickOffsetLeft = 30;
+		var bricks = [];	
+		function getRandomIntInclusive(min, max) {
+			  return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		for(c=0; c<brickColumnCount; c++) {
+		    bricks[c] = [];
+		    for(r=0; r<brickRowCount; r++) {
+		        bricks[c][r] = { x: 0, y: 0, status: getRandomIntInclusive(100,50) };
+		    }
+		}
+		
+		var mouseX=x;
+		var mouseY=y;
+		var lineX=0;
+		var lineY=0;
+		
+		var score = 0;
+		var lives =10;
+		
+		var rolling = false;
+		
+		function drawBricks() {
+		    for(c=0; c<brickColumnCount; c++) {
+		        for(r=0; r<brickRowCount; r++) {
+		        	if(bricks[c][r].status >= 1){
+			        	var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+			        	var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+			            bricks[c][r].x = brickX;
+			            bricks[c][r].y = brickY;
+			            ctx.beginPath();
+			            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+			            ctx.fillStyle = "#0095DD";
+			            ctx.fill();
+			            ctx.font = "16px Arial";
+					    ctx.fillStyle = "white";
+					    ctx.fillText(bricks[c][r].status, brickX+brickWidth/2-5, brickY+brickHeight/2+5);
+			            ctx.closePath();
+		        	}
+		        }
+		    }
+		}
+		
+		function collisionDetection() {
+		    for(c=0; c<brickColumnCount; c++) {
+		        for(r=0; r<brickRowCount; r++) {
+		            var b = bricks[c][r];
+		            if(b.status >= 1) {
+// 		                if((((x >= b.x-ballRadius) && (x <= b.x-ballRadius+Math.abs(dx)*2)) || ((x >= b.x +brickWidth+ballRadius) && (x <= b.x +brickWidth+ballRadius+Math.abs(dx)*2)))&& ((y >= b.y-ballRadius) && (y <= b.y+brickHeight+ballRadius))) {
+// 		                    dx = -dx;
+// 		                    x+=dx;
+// 		                    b.status--;
+// 		                    if(b.status == 0){
+// 			                    score++;		                    	
+// 		                    }
+// 		                    if(score == brickRowCount*brickColumnCount) {
+// 		                        alert("YOU WIN, CONGRATULATIONS!");
+// 		                        document.location.reload();
+// 		                    }
+// 		                }else if((((y >= b.y-ballRadius )&&( y <= b.y-ballRadius+Math.abs(dy)*2)) || ((y >= b.y +brickHeight+ballRadius )&& (y <= b.y +brickHeight+ballRadius+Math.abs(dy)*2)))&& ((x >= b.x-ballRadius) && (x <= b.x+brickHeight+ballRadius))) {
+// 		                    dy = -dy;
+// 		                    y+=dy;
+// 		                    b.status--;
+// 		                    if(b.status == 0){
+// 			                    score++;		                    	
+// 		                    }
+// 		                    if(score == brickRowCount*brickColumnCount) {
+// 		                        alert("YOU WIN, CONGRATULATIONS!");
+// 		                        document.location.reload();
+// 		                    }
+// 		                }
+		                if( ((x >= b.x-ballRadius) && (x <= b.x-ballRadius+Math.abs(dx)*3))&& ((y >= b.y-ballRadius) && (y <= b.y+brickHeight+ballRadius))) {
+		                    dx = -Math.abs(dx);
+		                    x+=dx;
+		                    b.status--;
+		                    if(b.status == 0){
+			                    score++;		                    	
+		                    }
+		                    if(score == brickRowCount*brickColumnCount) {
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }
+		                }
+		                else if( ((x >= b.x +brickWidth+ballRadius) && (x <= b.x +brickWidth+ballRadius-Math.abs(dx)*3)) && ((y >= b.y-ballRadius) && (y <= b.y+brickHeight+ballRadius))) {
+		                    dx = Math.abs(dx);
+		                    x+=dx;
+		                    b.status--;
+		                    if(b.status == 0){
+			                    score++;		                    	
+		                    }
+		                    if(score == brickRowCount*brickColumnCount) {
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }
+		                }
+		                else if(((y >= b.y-ballRadius )&&( y <= b.y-ballRadius+Math.abs(dy)*3))&& ((x >= b.x-ballRadius) && (x <= b.x+brickHeight+ballRadius))) {
+		                    dy = -Math.abs(dy);
+		                    y+=dy;
+		                    b.status--;
+		                    if(b.status == 0){
+			                    score++;		                    	
+		                    }
+		                    if(score == brickRowCount*brickColumnCount) {
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }
+		                }
+		                else if(((y >= b.y +brickHeight+ballRadius )&& (y <= b.y +brickHeight+ballRadius-Math.abs(dy)*3))&& ((x >= b.x-ballRadius) && (x <= b.x+brickHeight+ballRadius))) {
+		                    dy = Math.abs(dy);
+		                    y+=dy;
+		                    b.status--;
+		                    if(b.status == 0){
+			                    score++;		                    	
+		                    }
+		                    if(score == brickRowCount*brickColumnCount) {
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }
+		                }else if( (x<b.x-ballRadius) || (x>b.x+brickWidth+ballRadius) || (y<b.y-ballRadius) || (y>b.y+brickHeight+ballRadius)){
+		                	
+		                }else{
+		                	dy= Math.abs(dy);
+		                    y+=dy*2;
+		                    b.status--;
+		                    if(b.status == 0){
+			                    score++;		                    	
+		                    }
+		                    if(score == brickRowCount*brickColumnCount) {
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }
+		                }
+		                
+		                
+// 		                if(y > b.y-ballRadius && y < b.y+brickHeight+ballRadius &&x > b.x-ballRadius*0.9 && x < b.x+brickWidth+ballRadius*0.9) {
+// 		                    dy = -dy;
+// 		                    y+=dy*3;
+// 		                    b.status--;
+// 		                    if(b.status == 0){
+// 			                    score++;		                    	
+// 		                    }
+// 		                    if(score == brickRowCount*brickColumnCount) {
+// 		                        alert("YOU WIN, CONGRATULATIONS!");
+// 		                        document.location.reload();
+// 		                    }
+// 		                }else if(x > b.x-ballRadius && x < b.x+brickWidth+ballRadius && y > b.y-ballRadius*0.9 && y < b.y+brickHeight+ballRadius*0.9) {
+// 		                    dx = -dx;
+// 		                    x+=dx*3;
+// 		                    b.status--;
+// 		                    if(b.status == 0){
+// 			                    score++;		                    	
+// 		                    }
+// 		                    if(score == brickRowCount*brickColumnCount) {
+// 		                        alert("YOU WIN, CONGRATULATIONS!");
+// 		                        document.location.reload();
+// 		                    }
+// 		                }
+		            }
+		        }
+		    }
+		}
+		
+
+		function drawBall() {
+			ctx.beginPath();
+			ctx.arc(x, y, ballRadius, 0, Math.PI * 2);//left,top(중심좌표),반경,시작끝각도,그리는방향(true,false)
+			ctx.fillStyle = "#0095DD";
+			ctx.fill();
+			ctx.closePath();
+		}
+		
+		function drawScore() {
+		    ctx.font = "16px Arial";
+		    ctx.fillStyle = "#0095DD";
+		    ctx.fillText("Score: "+score, 8, 20);
+		}
+		
+		function drawLives() {
+		    ctx.font = "16px Arial";
+		    ctx.fillStyle = "#0095DD";
+		    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+		}
+		function drawLine() {
+			ctx.beginPath();              
+			ctx.lineWidth = "3";
+			ctx.strokeStyle = "lightblue";
+			ctx.moveTo(canvas.width/2, canvas.height-15);
+			ctx.lineTo(mouseX, mouseY);
+			ctx.stroke();
+		}
+
+		function draw() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawBricks();
+			collisionDetection();
+			drawScore();
+			drawLives();
+			if(rolling){				
+				drawBall();
+				x += dx;
+				y += dy;
+			}else{
+				drawLine();		
+				x = canvas.width / 2;
+				y = canvas.height-15;
+			}
+			
+			if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+			    dx = -dx;
+			}
+			if(y + dy < ballRadius) {
+			    dy = -dy;
+			}else if(y + dy > canvas.height-ballRadius){
+				lives--;
+				dx=0;
+				dy=0;
+				rolling = false;
+				if(!lives) {
+// 				    alert("GAME OVER");
+				    document.location.reload();
+				}
+				else {
+				    x = canvas.width/2;
+				    y = canvas.height-15;		
+				}
+			}
+			
+// 			requestAnimationFrame(draw);
+		}
+		
+
+		document.addEventListener("mousemove", mouseMoveHandler, false);
+		document.addEventListener("click", mouseClickHandler, false)
+
+		function mouseMoveHandler(e) {
+		    mouseX=e.clientX-canvas.offsetLeft;
+		    mouseY=e.clientY-canvas.offsetTop;
+		}
+		function mouseClickHandler(e){
+			lineX = e.clientX-(canvas.offsetLeft+canvas.width/2);
+			lineY = e.clientY-(canvas.offsetTop+canvas.height-15);
+			var dirxy = 0;
+			if(Math.abs(lineX)>Math.abs(lineY)){
+				dirxy=Math.abs(lineX);
+			}else{
+				dirxy=Math.abs(lineY);
+			}
+			dx=lineX/dirxy;
+			dy=lineY/dirxy;
+			rolling=true;
+		}
+		
+// 		draw();
+setInterval(draw, 0.1);
+	</script>
+
+</body>
+</html>
