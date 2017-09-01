@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Gamedev Canvas Workshop</title>
+<style>
+* {
+	padding: 0;
+	margin: 0;
+}
+
+canvas {
+	background: #eee;
+	display: block;
+	margin: 0 auto;
+}
+
+header{
+	text-align: center;
+	margin: 10px;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h1>벽돌 깨기!</h1>
+	</header>
+	<canvas id="myCanvas" width="480" height="480"></canvas>
+
+	<script>
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		var mouseX=x;
+		var mouseY=y;
+		var lineX=0;
+		var lineY=0;
+		var lives=10;//도전횟수
+		var startClock=0;//내부클럭
+		
+		var rolling = false;//공들이 굴러가는 중 인지 아닌지
+		
+		var x = canvas.width / 2;//시작위치
+		var y = canvas.height-ballRadius;//시작위치	
+		var dx=0;//x축속도
+		var dy=0;//y축속도
+		var balls=[];//공배열
+		var ballRadius = 4;//공반지름
+		var firstBalls = 10;//처음 공 개수
+		var ballBonus=5;//스페셜벽돌 파괴시 보너스 공 개수
+		var ballAcceleration=1.3;//공 속도 보정
+		var Ball = function(dx,dy){
+			this.bx = x;//이 공의 x좌표
+			this.by = y;//이 공의 y좌표
+			this.dx = dx;//이 공의 x속도
+			this.dy = dy;//이 공의 y속도
+			this.ing=false;//굴러가는 중인지
+			this.first=false;//첫공인지
+		}
+		for(var i = 0; i<firstBalls;i++){//공배열에 추가
+			balls.push(new Ball());
+		}
+		balls[0].first=true;//첫공
+				
+		var brickNum=0;//벽돌개수
+		var brickRowCount = 6;//벽돌 행
+		var brickColumnCount = 5;//벽돌 열
+		var brickWidth = 60;//벽돌 넓이
+		var brickHeight = 20;//벽돌 높이
+		var brickPadding = 30;//벽돌 간격
+		var brickOffsetTop = 40;//첫벽돌 top
+		var brickOffsetLeft = 30;//첫벽돌 left
+		var bricks = [];//벽돌배열
+		function getRandomIntInclusive(min, max) {//랜덤함수
+			  return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		for(c=0; c<brickColumnCount; c++) {//벽돌 값 설정
+		    bricks[c] = [];
+		    for(r=0; r<brickRowCount; r++) {
+		        bricks[c][r] = { x: 0, y: 0, 
+		        		status: (function(){//벽돌 체력
+					        	var sta=getRandomIntInclusive(90,-5);
+					        	sta=parseInt(sta);
+					        	if(sta>0){
+					        		brickNum++;
+					        	}
+					        	return sta;
+		        			})(), 
+		        		special:(function(){//스페셜 벽돌인지아닌지
+		        			var random=getRandomIntInclusive(20,10);
+		        			if(random>18){
+				        		return true;	        				
+		        			}else{
+		        				return false;
+		        			}
+		        			})()
+		        	};
+		    }
+		}
+		//--------------------------------------------
+		
+		function drawBricks() {//벽돌그리기
+		    for(c=0; c<brickColumnCount; c++) {
+		        for(r=0; r<brickRowCount; r++) {
+		        	if(bricks[c][r].status >= 1){
+			        	var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+			        	var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+			            bricks[c][r].x = brickX;
+			            bricks[c][r].y = brickY;
+			            ctx.beginPath();
+			            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+			            if(bricks[c][r].special){
+			            	ctx.fillStyle = "green"; //스페셜 벽돌 색상
+			            }else{
+				            ctx.fillStyle = "#0095DD";        	
+			            }
+			            ctx.fill();//벽돌 체력 표시
+			            ctx.font = "16px Arial";
+					    ctx.fillStyle = "white";
+					    ctx.fillText(bricks[c][r].status, brickX+brickWidth/2-5, brickY+brickHeight/2+5);
+			            ctx.closePath();
+		        	}
+		        }
+		    }
+		}
+		
+		function collisionDetection(ball) {//충돌함수
+		    for(c=0; c<brickColumnCount; c++) {
+		        for(r=0; r<brickRowCount; r++) {
+		            var b = bricks[c][r];
+		            if(b.status >= 1) {
+		                if( ((ball.bx >= b.x-ballRadius) && (ball.bx <= b.x))&& ((ball.by >= b.y-ballRadius) && (ball.by <= b.y+brickHeight+ballRadius))) {
+		                	ball.dx = -Math.abs(ball.dx);//벽돌 좌측 튕기기
+		                    b.status--;//체력감소
+		                    if(b.status == 0){//부셨을 때
+		                    	brickNum--;//벽돌개수감소
+		                    	if(b.special){//스페셜 벽돌일시
+		                    		for(var i = 0; i<ballBonus;i++){//보너스 공 추가
+			                    		balls.push(new Ball());	                    		
+		                    		}                		
+		                    	}
+		                    }
+		                    if(brickNum <= 0) {//벽돌 다 부셨으면 승리
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }
+		                }
+		                else if( ((ball.bx >= b.x +brickWidth) && (ball.bx <= b.x +brickWidth+ballRadius)) && ((ball.by >= b.y-ballRadius) && (ball.by <= b.y+brickHeight+ballRadius))) {
+		                	ball.dx = Math.abs(ball.dx);//벽돌 우측 튕기기
+		                    b.status--;
+		                    if(b.status == 0){
+		                    	brickNum--;		
+		                    	if(b.special){
+		                    		for(var i = 0; i<ballBonus;i++){
+			                    		balls.push(new Ball());	                    		
+		                    		}                     		
+		                    	}
+		                    }
+		                    if(brickNum<=0) {
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }
+		                }
+		                else if(((ball.by >= b.y-ballRadius )&&( ball.by <= b.y))&& ((ball.bx >= b.x-ballRadius) && (ball.bx <= b.x+brickWidth+ballRadius))) {
+		                	ball.dy = -Math.abs(ball.dy);//벽돌 상측 튕기기
+		                    b.status--;
+		                    if(b.status == 0){
+		                    	brickNum--;		
+		                    	if(b.special){
+		                    		for(var i = 0; i<ballBonus;i++){
+			                    		balls.push(new Ball());	                    		
+		                    		}                   		
+		                    	}
+		                    }
+		                    if(brickNum<=0) {
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }
+		                }
+		                else if(((ball.by >= b.y +brickHeight)&& (ball.by <= b.y +brickHeight+ballRadius))&& ((ball.bx >= b.x-ballRadius) && (ball.bx <= b.x+brickWidth+ballRadius))) {
+		                	ball.dy = Math.abs(ball.dy);//벽돌 하측 튕기기
+		                    b.status--;
+		                    if(b.status == 0){
+		                    	brickNum--;	
+		                    	if(b.special){
+		                    		for(var i = 0; i<ballBonus;i++){
+			                    		balls.push(new Ball());	                    		
+		                    		}                   		
+		                    	}
+		                    }
+		                    if(brickNum<=0) {
+		                        alert("YOU WIN, CONGRATULATIONS!");
+		                        document.location.reload();
+		                    }   	
+		                }
+		            }
+		        }
+		    }
+		}
+		
+
+		function drawBall(ball) {//공 그리기
+			ctx.beginPath();
+			ctx.arc(ball.bx, ball.by, ballRadius, 0, Math.PI * 2);//left,top(중심좌표),반경,시작끝각도,그리는방향(true,false)
+			if(ball.first){
+				ctx.fillStyle = "#cc66ff";//첫 공 색깔
+			}else{
+				ctx.fillStyle = "#0095DD";//나머지 공 색깔
+			}
+			ctx.fill();
+			ctx.closePath();
+		}
+		
+		function drawLives() {//남은 시도 횟수
+		    ctx.font = "16px Arial";
+		    ctx.fillStyle = "#0095DD";
+		    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+		}
+		function drawBalls() {//던지는 공 갯수
+		    ctx.font = "16px Arial";
+		    ctx.fillStyle = "#0095DD";
+		    ctx.fillText("Balls: "+balls.length, 25, 20);
+		}
+		function drawLine() {//가이드라인
+			ctx.beginPath();              
+			ctx.lineWidth = "3";
+			ctx.strokeStyle = "lightblue";
+			ctx.moveTo(balls[0].bx, canvas.height-ballRadius);//공의 위치부터
+			ctx.lineTo(mouseX, mouseY);//내 마우스 위치까지
+			ctx.stroke();
+		}
+
+		function draw() {//메인 드로우
+			ctx.clearRect(0, 0, canvas.width, canvas.height);//판 지우기
+			drawLives();
+			drawBricks();
+			drawBalls();
+			startClock++;//내부클락
+			for(var i = 0; i<balls.length;i++){	
+				drawBall(balls[i]);//공 그리기
+				collisionDetection(balls[i]);//벽돌별 충돌 이벤트 확인
+				if(balls[i].bx + balls[i].dx > canvas.width-ballRadius || balls[i].bx + balls[i].dx < ballRadius) {//캔버스 좌우 충돌
+					balls[i].dx = -balls[i].dx;
+				}
+				if(balls[i].by + balls[i].dy < ballRadius) {//캔버스 상 충돌
+					balls[i].dy = -balls[i].dy;
+				}else if(balls[i].by + balls[i].dy > canvas.height-ballRadius){//캔버스 하 충돌
+					balls[i].dx=0;//멈춤
+					balls[i].dy=0;//멈춤
+					balls[i].ing = false;//멈춤상태표시
+					balls[i].bx = balls[i].bx;//현재위치 대기
+					balls[i].by = canvas.height-ballRadius;//현재위치 대기
+				}
+				if(rolling){//굴러가능중(시작)
+					if(startClock>=i*10){//공별로 딜레이되어 차례대로 출발
+						if(balls[i].ing){//공이 굴러가는 중으로 설정 되어있으면 움직이기
+							balls[i].bx += balls[i].dx;
+							balls[i].by += balls[i].dy;								
+						}
+					}else if(i==0){//첫공은 바로
+						if(balls[0].ing){
+							balls[0].bx += balls[0].dx;
+							balls[0].by += balls[0].dy;								
+						}	
+					}
+					
+				}else{//공 안굴러 다닐때
+					drawLine();	// 가이드라인 표시
+					balls[i].bx = balls[0].bx;//첫공이랑 같은 위치로 이동
+					balls[i].by = canvas.height-ballRadius;
+				}
+				drawBall(balls[0]);//첫번째 공을 제일 위에 표시하기
+			}
+			
+			if(rolling){
+				var ingcount=0;//굴러다니는 공 개수
+				for(var i = 0; i<balls.length;i++){
+					if(balls[i].ing){
+						ingcount++;
+					}
+				}
+				if(ingcount == 0){//공이 다 구르고 멈췄으면
+					rolling=false;//정지하고
+					lives--;//횟수감소
+					if(!lives) {//횟수 다 썻으면
+					    alert("GAME OVER");
+					    document.location.reload();
+					}
+				}
+			}
+			
+		}
+		
+
+		document.addEventListener("mousemove", mouseMoveHandler, false);//마우스이동
+		document.addEventListener("click", mouseClickHandler, false)//마우스클릭
+
+		function mouseMoveHandler(e) {
+		    mouseX=e.clientX-canvas.offsetLeft;//내 마우스 위치 x
+		    mouseY=e.clientY-canvas.offsetTop;//내 마우스 위치 y
+		}
+		function mouseClickHandler(e){//클릭시
+			if(rolling!=true){
+				lineX = e.clientX-(canvas.offsetLeft+balls[0].bx);//공 위치로부터 내 마우스까지 x
+				lineY = e.clientY-(canvas.offsetTop+canvas.height-ballRadius);//공 위치로부터 내 마우스까지 y
+				var dirxy = 0;//x,y 중 작은값으로 나누어서 dx,dy값 설정
+				if(Math.abs(lineX)>Math.abs(lineY)){
+					dirxy=Math.abs(lineX);
+				}else{
+					dirxy=Math.abs(lineY);
+				}
+				dx=lineX/dirxy*ballAcceleration;
+				dy=lineY/dirxy*ballAcceleration;
+				for(var i=0;i<balls.length;i++){//속도값 설정해주고, 굴러가능중으로 설정
+					balls[i].dx=dx;
+					balls[i].dy=dy;
+					balls[i].ing=true;
+				}
+				rolling=true;//시작
+				startClock=0;
+			}
+		}
+		
+		setInterval(draw, 2);//반복
+	</script>
+
+</body>
+</html>
