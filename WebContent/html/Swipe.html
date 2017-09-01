@@ -25,7 +25,7 @@ header{
 	<header>
 		<h1>벽돌 깨기!</h1>
 	</header>
-	<canvas id="myCanvas" width="480" height="320"></canvas>
+	<canvas id="myCanvas" width="480" height="380"></canvas>
 
 	<script>
 		var canvas = document.getElementById("myCanvas");
@@ -33,16 +33,17 @@ header{
 		
 		var x = canvas.width / 2;
 		var y = canvas.height-15;
-		var dx = 2;
-		var dy = -2;
+		var dx = 0;
+		var dy = 0;
 		var ballRadius = 6;
-						
-		var brickRowCount = 3;
-		var brickColumnCount = 5;
-		var brickWidth = 65;
-		var brickHeight = 30;
-		var brickPadding = 30;
-		var brickOffsetTop = 30;
+					
+		var brickNum=0;
+		var brickRowCount = 4;
+		var brickColumnCount = 6;
+		var brickWidth = 60;
+		var brickHeight = 20;
+		var brickPadding = 15;
+		var brickOffsetTop = 40;
 		var brickOffsetLeft = 30;
 		var bricks = [];	
 		function getRandomIntInclusive(min, max) {
@@ -51,7 +52,15 @@ header{
 		for(c=0; c<brickColumnCount; c++) {
 		    bricks[c] = [];
 		    for(r=0; r<brickRowCount; r++) {
-		        bricks[c][r] = { x: 0, y: 0, status: getRandomIntInclusive(100,50) };
+		        bricks[c][r] = { x: 0, y: 0, status: (function(){
+		        	var sta=getRandomIntInclusive(3,-1);
+		        	sta=parseInt(sta);
+		        	if(sta!=0){
+		        		brickNum++;
+		        	}
+		        	return sta;
+		        			})()
+		        	};
 		    }
 		}
 		
@@ -91,115 +100,54 @@ header{
 		        for(r=0; r<brickRowCount; r++) {
 		            var b = bricks[c][r];
 		            if(b.status >= 1) {
-// 		                if((((x >= b.x-ballRadius) && (x <= b.x-ballRadius+Math.abs(dx)*2)) || ((x >= b.x +brickWidth+ballRadius) && (x <= b.x +brickWidth+ballRadius+Math.abs(dx)*2)))&& ((y >= b.y-ballRadius) && (y <= b.y+brickHeight+ballRadius))) {
-// 		                    dx = -dx;
-// 		                    x+=dx;
-// 		                    b.status--;
-// 		                    if(b.status == 0){
-// 			                    score++;		                    	
-// 		                    }
-// 		                    if(score == brickRowCount*brickColumnCount) {
-// 		                        alert("YOU WIN, CONGRATULATIONS!");
-// 		                        document.location.reload();
-// 		                    }
-// 		                }else if((((y >= b.y-ballRadius )&&( y <= b.y-ballRadius+Math.abs(dy)*2)) || ((y >= b.y +brickHeight+ballRadius )&& (y <= b.y +brickHeight+ballRadius+Math.abs(dy)*2)))&& ((x >= b.x-ballRadius) && (x <= b.x+brickHeight+ballRadius))) {
-// 		                    dy = -dy;
-// 		                    y+=dy;
-// 		                    b.status--;
-// 		                    if(b.status == 0){
-// 			                    score++;		                    	
-// 		                    }
-// 		                    if(score == brickRowCount*brickColumnCount) {
-// 		                        alert("YOU WIN, CONGRATULATIONS!");
-// 		                        document.location.reload();
-// 		                    }
-// 		                }
-		                if( ((x >= b.x-ballRadius) && (x <= b.x-ballRadius+Math.abs(dx)*3))&& ((y >= b.y-ballRadius) && (y <= b.y+brickHeight+ballRadius))) {
+		                if( ((x >= b.x-ballRadius) && (x <= b.x))&& ((y >= b.y-ballRadius) && (y <= b.y+brickHeight+ballRadius))) {
 		                    dx = -Math.abs(dx);
 		                    x+=dx;
 		                    b.status--;
 		                    if(b.status == 0){
 			                    score++;		                    	
 		                    }
-		                    if(score == brickRowCount*brickColumnCount) {
+		                    if(score == brickNum) {
 		                        alert("YOU WIN, CONGRATULATIONS!");
 		                        document.location.reload();
 		                    }
 		                }
-		                else if( ((x >= b.x +brickWidth+ballRadius) && (x <= b.x +brickWidth+ballRadius-Math.abs(dx)*3)) && ((y >= b.y-ballRadius) && (y <= b.y+brickHeight+ballRadius))) {
+		                else if( ((x >= b.x +brickWidth) && (x <= b.x +brickWidth+ballRadius)) && ((y >= b.y-ballRadius) && (y <= b.y+brickHeight+ballRadius))) {
 		                    dx = Math.abs(dx);
 		                    x+=dx;
 		                    b.status--;
 		                    if(b.status == 0){
 			                    score++;		                    	
 		                    }
-		                    if(score == brickRowCount*brickColumnCount) {
+		                    if(score == brickNum) {
 		                        alert("YOU WIN, CONGRATULATIONS!");
 		                        document.location.reload();
 		                    }
 		                }
-		                else if(((y >= b.y-ballRadius )&&( y <= b.y-ballRadius+Math.abs(dy)*3))&& ((x >= b.x-ballRadius) && (x <= b.x+brickHeight+ballRadius))) {
+		                else if(((y >= b.y-ballRadius )&&( y <= b.y))&& ((x >= b.x-ballRadius) && (x <= b.x+brickWidth+ballRadius))) {
 		                    dy = -Math.abs(dy);
 		                    y+=dy;
 		                    b.status--;
 		                    if(b.status == 0){
 			                    score++;		                    	
 		                    }
-		                    if(score == brickRowCount*brickColumnCount) {
+		                    if(score == brickNum) {
 		                        alert("YOU WIN, CONGRATULATIONS!");
 		                        document.location.reload();
 		                    }
 		                }
-		                else if(((y >= b.y +brickHeight+ballRadius )&& (y <= b.y +brickHeight+ballRadius-Math.abs(dy)*3))&& ((x >= b.x-ballRadius) && (x <= b.x+brickHeight+ballRadius))) {
+		                else if(((y >= b.y +brickHeight)&& (y <= b.y +brickHeight+ballRadius))&& ((x >= b.x-ballRadius) && (x <= b.x+brickWidth+ballRadius))) {
 		                    dy = Math.abs(dy);
 		                    y+=dy;
 		                    b.status--;
 		                    if(b.status == 0){
 			                    score++;		                    	
 		                    }
-		                    if(score == brickRowCount*brickColumnCount) {
+		                    if(score == brickNum) {
 		                        alert("YOU WIN, CONGRATULATIONS!");
 		                        document.location.reload();
-		                    }
-		                }else if( (x<b.x-ballRadius) || (x>b.x+brickWidth+ballRadius) || (y<b.y-ballRadius) || (y>b.y+brickHeight+ballRadius)){
-		                	
-		                }else{
-		                	dy= Math.abs(dy);
-		                    y+=dy*2;
-		                    b.status--;
-		                    if(b.status == 0){
-			                    score++;		                    	
-		                    }
-		                    if(score == brickRowCount*brickColumnCount) {
-		                        alert("YOU WIN, CONGRATULATIONS!");
-		                        document.location.reload();
-		                    }
+		                    }   	
 		                }
-		                
-		                
-// 		                if(y > b.y-ballRadius && y < b.y+brickHeight+ballRadius &&x > b.x-ballRadius*0.9 && x < b.x+brickWidth+ballRadius*0.9) {
-// 		                    dy = -dy;
-// 		                    y+=dy*3;
-// 		                    b.status--;
-// 		                    if(b.status == 0){
-// 			                    score++;		                    	
-// 		                    }
-// 		                    if(score == brickRowCount*brickColumnCount) {
-// 		                        alert("YOU WIN, CONGRATULATIONS!");
-// 		                        document.location.reload();
-// 		                    }
-// 		                }else if(x > b.x-ballRadius && x < b.x+brickWidth+ballRadius && y > b.y-ballRadius*0.9 && y < b.y+brickHeight+ballRadius*0.9) {
-// 		                    dx = -dx;
-// 		                    x+=dx*3;
-// 		                    b.status--;
-// 		                    if(b.status == 0){
-// 			                    score++;		                    	
-// 		                    }
-// 		                    if(score == brickRowCount*brickColumnCount) {
-// 		                        alert("YOU WIN, CONGRATULATIONS!");
-// 		                        document.location.reload();
-// 		                    }
-// 		                }
 		            }
 		        }
 		    }
@@ -282,21 +230,23 @@ header{
 		    mouseY=e.clientY-canvas.offsetTop;
 		}
 		function mouseClickHandler(e){
-			lineX = e.clientX-(canvas.offsetLeft+canvas.width/2);
-			lineY = e.clientY-(canvas.offsetTop+canvas.height-15);
-			var dirxy = 0;
-			if(Math.abs(lineX)>Math.abs(lineY)){
-				dirxy=Math.abs(lineX);
-			}else{
-				dirxy=Math.abs(lineY);
+			if(rolling!=true){
+				lineX = e.clientX-(canvas.offsetLeft+canvas.width/2);
+				lineY = e.clientY-(canvas.offsetTop+canvas.height-15);
+				var dirxy = 0;
+				if(Math.abs(lineX)>Math.abs(lineY)){
+					dirxy=Math.abs(lineX);
+				}else{
+					dirxy=Math.abs(lineY);
+				}
+				dx=lineX/dirxy;
+				dy=lineY/dirxy;
+				rolling=true;		
 			}
-			dx=lineX/dirxy;
-			dy=lineY/dirxy;
-			rolling=true;
 		}
 		
 // 		draw();
-setInterval(draw, 0.1);
+setInterval(draw, 1);
 	</script>
 
 </body>
