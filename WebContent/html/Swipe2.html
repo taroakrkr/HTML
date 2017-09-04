@@ -62,11 +62,17 @@ header{
 		balls[0].first=true;//첫공
 				
 		var brickNum=0;//벽돌개수
-		var brickRowCount = 6;//벽돌 행
-		var brickColumnCount = 5;//벽돌 열
-		var brickWidth = 60;//벽돌 넓이
-		var brickHeight = 20;//벽돌 높이
-		var brickPadding = 30;//벽돌 간격
+// 		var brickRowCount = 6;//벽돌 행
+// 		var brickColumnCount = 5;//벽돌 열
+// 		var brickWidth = 60;//벽돌 넓이
+// 		var brickHeight = 20;//벽돌 높이
+// 		var brickPadding = 30;//벽돌 간격
+		var brickRowCount = 8;//벽돌 행
+		var brickColumnCount = 6;//벽돌 열
+		var brickWidth = 70;//벽돌 넓이
+		var brickHeight = 30;//벽돌 높이
+		var brickPadding = 0;//벽돌 간격
+		
 		var brickOffsetTop = 40;//첫벽돌 top
 		var brickOffsetLeft = 30;//첫벽돌 left
 		var bricks = [];//벽돌배열
@@ -78,7 +84,7 @@ header{
 		    for(r=0; r<brickRowCount; r++) {
 		        bricks[c][r] = { x: 0, y: 0, 
 		        		status: (function(){//벽돌 체력
-					        	var sta=getRandomIntInclusive(90,-5);
+					        	var sta=getRandomIntInclusive(50,-10);
 					        	sta=parseInt(sta);
 					        	if(sta>0){
 					        		brickNum++;
@@ -94,6 +100,9 @@ header{
 		        			}
 		        			})()
 		        	};
+		        if(bricks[c][r].special){
+		        	bricks[c][r].status=firstBalls;
+		        }
 		    }
 		}
 		//--------------------------------------------
