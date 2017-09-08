@@ -83,7 +83,7 @@ header{
 		    bricks[c] = [];
 		    for(r=0; r<brickRowCount; r++) {
 		        bricks[c][r] = { x: 0, y: 0, 
-		        		status: (function(){//벽돌 체력
+		        		hp: (function(){//벽돌 체력
 					        	var sta=getRandomIntInclusive(50,-10);
 					        	sta=parseInt(sta);
 					        	if(sta>0){
@@ -101,7 +101,7 @@ header{
 		        			})()
 		        	};
 		        if(bricks[c][r].special){
-		        	bricks[c][r].status=firstBalls;
+		        	bricks[c][r].hp=firstBalls;
 		        }
 		    }
 		}
@@ -110,7 +110,7 @@ header{
 		function drawBricks() {//벽돌그리기
 		    for(c=0; c<brickColumnCount; c++) {
 		        for(r=0; r<brickRowCount; r++) {
-		        	if(bricks[c][r].status >= 1){
+		        	if(bricks[c][r].hp >= 1){
 			        	var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
 			        	var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
 			            bricks[c][r].x = brickX;
@@ -125,7 +125,7 @@ header{
 			            ctx.fill();//벽돌 체력 표시
 			            ctx.font = "16px Arial";
 					    ctx.fillStyle = "white";
-					    ctx.fillText(bricks[c][r].status, brickX+brickWidth/2-5, brickY+brickHeight/2+5);
+					    ctx.fillText(bricks[c][r].hp, brickX+brickWidth/2-5, brickY+brickHeight/2+5);
 			            ctx.closePath();
 		        	}
 		        }
@@ -136,11 +136,11 @@ header{
 		    for(c=0; c<brickColumnCount; c++) {
 		        for(r=0; r<brickRowCount; r++) {
 		            var b = bricks[c][r];
-		            if(b.status >= 1) {
+		            if(b.hp >= 1) {
 		                if( ((ball.bx >= b.x-ballRadius) && (ball.bx <= b.x))&& ((ball.by >= b.y-ballRadius) && (ball.by <= b.y+brickHeight+ballRadius))) {
 		                	ball.dx = -Math.abs(ball.dx);//벽돌 좌측 튕기기
-		                    b.status--;//체력감소
-		                    if(b.status == 0){//부셨을 때
+		                    b.hp--;//체력감소
+		                    if(b.hp == 0){//부셨을 때
 		                    	brickNum--;//벽돌개수감소
 		                    	if(b.special){//스페셜 벽돌일시
 		                    		for(var i = 0; i<ballBonus;i++){//보너스 공 추가
@@ -155,8 +155,8 @@ header{
 		                }
 		                else if( ((ball.bx >= b.x +brickWidth) && (ball.bx <= b.x +brickWidth+ballRadius)) && ((ball.by >= b.y-ballRadius) && (ball.by <= b.y+brickHeight+ballRadius))) {
 		                	ball.dx = Math.abs(ball.dx);//벽돌 우측 튕기기
-		                    b.status--;
-		                    if(b.status == 0){
+		                    b.hp--;
+		                    if(b.hp == 0){
 		                    	brickNum--;		
 		                    	if(b.special){
 		                    		for(var i = 0; i<ballBonus;i++){
@@ -171,8 +171,8 @@ header{
 		                }
 		                else if(((ball.by >= b.y-ballRadius )&&( ball.by <= b.y))&& ((ball.bx >= b.x-ballRadius) && (ball.bx <= b.x+brickWidth+ballRadius))) {
 		                	ball.dy = -Math.abs(ball.dy);//벽돌 상측 튕기기
-		                    b.status--;
-		                    if(b.status == 0){
+		                    b.hp--;
+		                    if(b.hp == 0){
 		                    	brickNum--;		
 		                    	if(b.special){
 		                    		for(var i = 0; i<ballBonus;i++){
@@ -187,8 +187,8 @@ header{
 		                }
 		                else if(((ball.by >= b.y +brickHeight)&& (ball.by <= b.y +brickHeight+ballRadius))&& ((ball.bx >= b.x-ballRadius) && (ball.bx <= b.x+brickWidth+ballRadius))) {
 		                	ball.dy = Math.abs(ball.dy);//벽돌 하측 튕기기
-		                    b.status--;
-		                    if(b.status == 0){
+		                    b.hp--;
+		                    if(b.hp == 0){
 		                    	brickNum--;	
 		                    	if(b.special){
 		                    		for(var i = 0; i<ballBonus;i++){
