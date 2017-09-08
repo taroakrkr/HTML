@@ -8,13 +8,11 @@
 	padding: 0;
 	margin: 0;
 }
-
 canvas {
 	background: #eee;
 	display: block;
 	margin: 0 auto;
 }
-
 header{
 	text-align: center;
 	margin: 10px;
@@ -206,7 +204,6 @@ header{
 		    }
 		}
 		
-
 		function drawBall(ball) {//공 그리기
 			ctx.beginPath();
 			ctx.arc(ball.bx, ball.by, ballRadius, 0, Math.PI * 2);//left,top(중심좌표),반경,시작끝각도,그리는방향(true,false)
@@ -237,7 +234,6 @@ header{
 			ctx.lineTo(mouseX, mouseY);//내 마우스 위치까지
 			ctx.stroke();
 		}
-
 		function draw() {//메인 드로우
 			ctx.clearRect(0, 0, canvas.width, canvas.height);//판 지우기
 			drawLives();
@@ -299,10 +295,8 @@ header{
 			
 		}
 		
-
 		document.addEventListener("mousemove", mouseMoveHandler, false);//마우스이동
 		document.addEventListener("click", mouseClickHandler, false)//마우스클릭
-
 		function mouseMoveHandler(e) {
 		    mouseX=e.clientX-canvas.offsetLeft;//내 마우스 위치 x
 		    mouseY=e.clientY-canvas.offsetTop;//내 마우스 위치 y
