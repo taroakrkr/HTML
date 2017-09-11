@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Gamedev Canvas Workshop</title>
+<style>
+* {
+	padding: 0;
+	margin: 0;
+}
+canvas {
+	background: #eee;
+	display: block;
+	margin: 0 auto;
+}
+header{
+	text-align: center;
+	margin: 10px;
+}
+canvas { 
+cursor: url(../img/cursor.cur), auto; 
+}
+
+</style>
+<script src="../js/jquery-3.2.1.js"></script>
+</head>
+<body>
+	<header>
+		<h1>Aim</h1>
+	</header>
+	<canvas id="myCanvas" width="500" height="400"></canvas>
+	
+	<script>
+		$('#myCanvas').css({'cursor':'url(../img/cursor.cur), auto'});
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		var mouseX=0;//마우스x 마우스 아이콘 가로세로16픽셀
+		var mouseY=0;//마우스y 
+		var hit=false;
+		var hitCount=0;//도전횟수
+		var missCount=0;//도전횟수
+		var innerClock=0;//내부클럭
+		var targetSize=7;
+		function getRandomIntInclusive(min, max) {
+			  return Math.floor(Math.random() * (max - min + 1)) + min;
+			}
+		var targets=[];
+		var Target = function(){
+			this.tx=getRandomIntInclusive(8,canvas.width-8);
+			this.ty=getRandomIntInclusive(8,canvas.height-8);
+			this.visible=true;
+		}	
+		targets.push(new Target());
+	
+		function drawTarget(target) {//타겟 그리기
+			if(target.visible){
+				ctx.beginPath();
+				ctx.arc(target.tx, target.ty, targetSize, 0, Math.PI * 2);//left,top(중심좌표),반경,시작끝각도,그리는방향(true,false)
+				ctx.fillStyle = "red";
+				ctx.fill();
+				ctx.closePath();
+				ctx.beginPath();
+				ctx.arc(target.tx, target.ty, targetSize-1, 0, Math.PI * 2);
+				ctx.fillStyle = "white";
+				ctx.fill();
+				ctx.closePath();
+				ctx.beginPath();
+				ctx.arc(target.tx, target.ty, targetSize-3, 0, Math.PI * 2);
+				ctx.fillStyle = "red";
+				ctx.fill();
+				ctx.closePath();	
+			}
+		}
+		function drawMiss() {//남은 시도 횟수
+		    ctx.font = "16px Arial";
+		    ctx.fillStyle = "#0095DD";
+		    ctx.fillText("miss: "+missCount, canvas.width-65, 20);
+		}
+		function drawHit() {//던지는 공 갯수
+		    ctx.font = "16px Arial";
+		    ctx.fillStyle = "#0095DD";
+		    ctx.fillText("hit: "+hitCount, 25, 20);
+		}
+		function hitting(target,mx,my){		
+			if(mx>target.tx-targetSize && mx<target.tx+targetSize && my>target.ty-targetSize && my<target.ty+targetSize){
+				target.visible=false;
+				hitCount++;
+				hit=true;
+			}
+		}
+		
+		
+		function draw() {//메인 드로우
+			ctx.clearRect(0, 0, canvas.width, canvas.height);//판 지우기
+			drawHit();
+			drawMiss();
+			for(var i=0; i<targets.length;i++){
+				drawTarget(targets[i]);
+		    }
+			if(innerClock>100){
+				targets.push(new Target());
+				innerClock=0;
+			}
+			innerClock++;
+		}
+		
+		document.addEventListener("click", mouseClickHandler, false)//마우스클릭
+		function mouseClickHandler(e){//클릭시
+			mouseX=e.clientX-canvas.offsetLeft+8;//내 마우스 위치 x
+		    mouseY=e.clientY-canvas.offsetTop+8;//내 마우스 위치 y
+		    for(var i=0; i<targets.length;i++){
+		    	if(targets[i].visible){
+			    	hitting(targets[i],mouseX,mouseY);	
+		    	}
+		    }
+		    if(!hit){
+		    	missCount++;
+		    }
+		    hit=false;
+		}
+		
+		setInterval(draw, 5);//반복
+	</script>
+
+</body>
+</html>
